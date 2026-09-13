@@ -1,0 +1,81 @@
+{# Reusable "scan to open on your phone" widget. Requires `phone_target_url`
+   and `phone_widget_id` (unique per page, so more than one can exist on a page). #}
+<div class="bg-white border border-navy-100 rounded-xl p-6">
+  <div class="flex flex-col sm:flex-row items-center gap-6">
+    <div id="{{ phone_widget_id }}-qr" class="shrink-0 bg-white p-2 border border-navy-100 rounded-lg" style="width:148px;height:148px;" aria-hidden="true"></div>
+    <div class="text-center sm:text-left min-w-0">
+      <p class="text-xs font-semibold tracking-wider uppercase text-coral-500 mb-1">On your phone</p>
+      <p class="text-navy-800 font-medium mb-1">{{ phone_widget_label or "Scan to open this on your phone" }}</p>
+      <p class="text-xs text-navy-500 mb-3">Phone must be on the same Wi-Fi network as this computer.</p>
+      <div class="flex items-center gap-2">
+        <input id="{{ phone_widget_id }}-link" type="text" readonly value="{{ phone_target_url }}"
+               class="input-field text-xs flex-1 min-w-0" onclick="this.select()">
+        <button type="button" id="{{ phone_widget_id }}-copy" class="bg-navy-900 text-white text-xs font-medium px-3 py-2 rounded-lg hover:bg-navy-800 transition whitespace-nowrap">Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    function render() {
+      var el = document.getElementById('{{ phone_widget_id }}-qr');
+      if (el && window.QRCode) {
+        el.innerHTML = '';
+        new QRCode(el, {
+          text: {{ phone_target_url | tojson }},
+          width: 132,
+          height: 132,
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+    }
+    function showFallback() {
+      var el = document.getElementById('{{ phone_widget_id }}-qr');
+      if (el && !el.querySelector('canvas, table, img')) {
+        el.innerHTML = '<p style="font-size:11px;line-height:1.3;color:#5a7393;padding:4px;">QR code unavailable. Use the link instead.</p>';
+      }
+    }
+
+    if (window.QRCode) {
+      render();
+    } else if (!window.__resonatePhoneDemoLoading) {
+      window.__resonatePhoneDemoLoading = true;
+      var s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+      s.onload = function () {
+        window.dispatchEvent(new Event('resonate-qrcode-ready'));
+      };
+      s.onerror = function () {
+        window.dispatchEvent(new Event('resonate-qrcode-failed'));
+      };
+      document.head.appendChild(s);
+      setTimeout(showFallback, 4000);
+    } else {
+      setTimeout(showFallback, 4000);
+    }
+    window.addEventListener('resonate-qrcode-ready', render);
+    window.addEventListener('resonate-qrcode-failed', showFallback);
+
+    var copyBtn = document.getElementById('{{ phone_widget_id }}-copy');
+    var linkInput = document.getElementById('{{ phone_widget_id }}-link');
+    if (copyBtn && linkInput) {
+      copyBtn.addEventListener('click', function () {
+        linkInput.select();
+        linkInput.setSelectionRange(0, 99999);
+        var done = function () {
+          copyBtn.textContent = 'Copied';
+          setTimeout(function () { copyBtn.textContent = 'Copy'; }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(linkInput.value).then(done).catch(function () {
+            document.execCommand('copy');
+            done();
+          });
+        } else {
+          document.execCommand('copy');
+          done();
+        }
+      });
+    }
+  })();
+</script>

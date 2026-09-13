@@ -3,13 +3,59 @@ from datetime import datetime, timezone
 import sqlite3
 import os
 import secrets
+import socket
 from functools import wraps
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "data", "resonate.db")
+SECRET_KEY_PATH = os.path.join(os.path.dirname(__file__), "data", "secret_key.txt")
+
+
+def get_or_create_secret_key():
+    """Persist the Flask secret key to disk so admin/portal logins and
+    flashed messages survive a dev-server restart instead of silently
+    logging everyone out every time app.py restarts."""
+    os.makedirs(os.path.dirname(SECRET_KEY_PATH), exist_ok=True)
+    if os.path.exists(SECRET_KEY_PATH):
+        with open(SECRET_KEY_PATH, "r") as f:
+            key = f.read().strip()
+            if key:
+                return key
+    key = secrets.token_hex(32)
+    with open(SECRET_KEY_PATH, "w") as f:
+        f.write(key)
+    return key
+
+
+app.secret_key = get_or_create_secret_key()
+
+
+def get_lan_ip():
+    """Best-effort LAN IP for this machine, so a QR code/link generated
+    while browsing on localhost still resolves from a phone on the same Wi-Fi."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except OSError:
+        return None
+
+
+def phone_friendly_url(path):
+    """Absolute URL to `path` that a phone can actually load. request.host
+    is often 127.0.0.1 when the app is opened locally on the same computer,
+    which a phone can't reach, so swap in the LAN IP in that case."""
+    hostname = request.host.split(":")[0]
+    absolute = request.host_url.rstrip("/") + path
+    if hostname in ("127.0.0.1", "localhost", "0.0.0.0"):
+        lan_ip = get_lan_ip()
+        if lan_ip:
+            absolute = absolute.replace(hostname, lan_ip, 1)
+    return absolute
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -451,9 +497,6 @@ def admin():
     intakes = conn.execute("SELECT * FROM intakes ORDER BY created_at DESC").fetchall()
     bookings = conn.execute("SELECT * FROM bookings ORDER BY created_at DESC").fetchall()
     clients = conn.execute("SELECT * FROM clients ORDER BY created_at DESC").fetchall()
-    feedback = conn.execute(
-        "SELECT f.*, i.goal, i.name as client_name FROM feedback f LEFT JOIN intakes i ON f.intake_id = i.id ORDER BY f.created_at DESC"
-    ).fetchall() if True else []
     try:
         feedback = conn.execute(
             "SELECT f.*, i.goal, i.name as client_name FROM feedback f LEFT JOIN intakes i ON f.intake_id = i.id ORDER BY f.created_at DESC"
@@ -461,7 +504,14 @@ def admin():
     except Exception:
         feedback = []
     conn.close()
-    return render_template("admin.html", intakes=intakes, bookings=bookings, clients=clients, feedback=feedback)
+    return render_template(
+        "admin.html",
+        intakes=intakes,
+        bookings=bookings,
+        clients=clients,
+        feedback=feedback,
+        phone_target_url=phone_friendly_url(url_for("index")),
+    )
 
 
 @app.route("/admin/edit", methods=["GET", "POST"])
@@ -789,6 +839,7 @@ def demo_page():
         biden_1_rewrite=get_content("demo_biden_1_rewrite", ""),
         biden_2_orig=get_content("demo_biden_2_orig", ""),
         biden_2_rewrite=get_content("demo_biden_2_rewrite", ""),
+        phone_target_url=phone_friendly_url(url_for("demo_page")),
     )
 
 @app.route("/reviews")
@@ -830,13 +881,17 @@ def admin_reviews():
             conn.commit()
             flash("Reviews visibility updated.", "success")
         elif action == "add":
+            try:
+                rating = int(request.form.get("rating") or 5)
+            except ValueError:
+                rating = 5
             conn.execute(
                 "INSERT INTO reviews (name, role, quote, rating, visible, created_at) VALUES (?, ?, ?, ?, 1, ?)",
                 (
                     request.form.get("name", "").strip(),
                     request.form.get("role", "").strip(),
                     request.form.get("quote", "").strip(),
-                    int(request.form.get("rating") or 5),
+                    rating,
                     datetime.now(timezone.utc).isoformat(),
                 ),
             )
@@ -901,9 +956,8 @@ def admin_logout():
     return redirect(url_for("admin_login"))
 
 @app.route("/admin/update_status/<int:intake_id>", methods=["POST"])
+@admin_required
 def update_status(intake_id):
-    if not session.get("admin"):
-        return redirect(url_for("admin"))
     status = request.form.get("status")
     conn = get_db()
     conn.execute("UPDATE intakes SET status = ? WHERE id = ?", (status, intake_id))
@@ -913,9 +967,8 @@ def update_status(intake_id):
     return redirect(url_for("admin"))
 
 @app.route("/admin/add_deliverable/<int:intake_id>", methods=["POST"])
+@admin_required
 def add_deliverable(intake_id):
-    if not session.get("admin"):
-        return redirect(url_for("admin"))
     title = request.form.get("title", "").strip()
     content = request.form.get("content", "").strip()
     notes = request.form.get("notes", "").strip()

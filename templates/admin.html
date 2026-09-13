@@ -18,7 +18,7 @@
   </div>
 
   <!-- Stats -->
-  <div class="grid grid-cols-3 gap-4 mb-12">
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
     <div class="bg-white rounded-xl border border-slate-200 p-5">
       <p class="text-sm text-slate-500">Clients</p>
       <p class="text-2xl font-bold mt-1">{{ clients|length }}</p>
@@ -32,6 +32,13 @@
       <p class="text-2xl font-bold mt-1">{{ bookings|length }}</p>
     </div>
   </div>
+
+  <!-- Phone demo -->
+  <section class="mb-12">
+    {% set phone_widget_id = "admin-home" %}
+    {% set phone_widget_label = "Show Resonate on your phone" %}
+    {% include "_phone_demo.html" with context %}
+  </section>
 
   <!-- Bookings -->
   <section class="mb-12">
@@ -95,7 +102,7 @@
             {% if i.key_messages %}<p><span class="font-medium">Key messages:</span> {{ i.key_messages }}</p>{% endif %}
             {% if i.existing_draft %}
               <details class="mt-2">
-                <summary class="cursor-pointer text-brand-600">View existing draft</summary>
+                <summary class="cursor-pointer text-navy-700 font-medium">View existing draft</summary>
                 <pre class="mt-2 p-3 bg-slate-50 rounded-lg text-xs whitespace-pre-wrap">{{ i.existing_draft }}</pre>
               </details>
             {% endif %}
@@ -111,7 +118,7 @@
                         class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-mono"></textarea>
               <textarea name="notes" rows="2" placeholder="Strategy / delivery notes (optional)"
                         class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"></textarea>
-              <button type="submit" class="bg-brand-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-brand-700">
+              <button type="submit" class="bg-navy-900 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-navy-800 transition">
                 Upload deliverable
               </button>
             </form>
@@ -121,7 +128,6 @@
       </div>
     {% endif %}
   </section>
-</div>
 
   <section class="mt-12">
     <h2 class="text-lg font-semibold mb-4 text-navy-900">Client feedback</h2>
@@ -141,5 +147,6 @@
       <p class="text-navy-500 text-sm">No feedback yet.</p>
     {% endif %}
   </section>
+</div>
 
 {% endblock %}
