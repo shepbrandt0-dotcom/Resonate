@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Services · Resonate{% endblock %}
+{% block page_emblem %}{% endblock %}
+{% block content %}
+<section class="max-w-3xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
+  <div class="flex items-center gap-4 mb-8">
+    <span class="inline-flex bg-white rounded-xl p-2 border border-navy-100 shrink-0">
+      <img src="{ url_for('static', filename='img/logo-emblem-light-clean.png') }" alt="" class="h-12 w-auto">
+    </span>
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider">Services</p>
+      <h1 class="text-3xl sm:text-4xl font-bold text-navy-900 tracking-tight font-display">What Resonate provides</h1>
+    </div>
+  </div>
+
+  <p class="text-base sm:text-lg text-navy-600 mb-4 leading-relaxed">{{ services_intro }}</p>
+  <p class="text-sm text-navy-500 mb-12 leading-relaxed bg-navy-50 border border-navy-100 rounded-lg px-4 py-3">
+    Site tools such as the navigation chat are separate from client deliverables. Your speeches, notes, and strategy memos are human work.
+  </p>
+
+  <div class="space-y-8">
+    <article class="bg-white border border-navy-100 rounded-xl p-8">
+      <h2 class="text-xl font-semibold text-navy-900 mb-3 font-display">Speech drafts and rewrites</h2>
+      <p class="text-navy-600 leading-relaxed mb-3">
+        Full speeches or targeted sections written or rewritten for a specific audience and moment. This includes campaign launches, town hall openings, convention style remarks, and shorter set pieces for video.
+      </p>
+      <p class="text-navy-600 leading-relaxed">
+        The process starts with your goal and constraints, then produces language that is clear under pressure. You receive a draft in the member portal, with room for one or more revision rounds depending on the package.
+      </p>
+    </article>
+
+    <article class="bg-white border border-navy-100 rounded-xl p-8">
+      <h2 class="text-xl font-semibold text-navy-900 mb-3 font-display">Delivery coaching</h2>
+      <p class="text-navy-600 leading-relaxed mb-3">
+        Notes and live or async coaching on how the speech is delivered: pacing, emphasis, pauses, and the energy in the room. The focus is removing the forced tone younger audiences notice immediately, while keeping substance intact.
+      </p>
+      <p class="text-navy-600 leading-relaxed">
+        Coaching pairs well with a draft so the words and the delivery support each other. Feedback is practical and specific, not generic presentation tips.
+      </p>
+    </article>
+
+    <article class="bg-white border border-navy-100 rounded-xl p-8">
+      <h2 class="text-xl font-semibold text-navy-900 mb-3 font-display">Messaging strategy</h2>
+      <p class="text-navy-600 leading-relaxed mb-3">
+        A focused memo on tone, framing, and message hierarchy for a race, issue, or event. It covers what must land, what to de-emphasize, and how the same core idea can travel from a formal speech to a short clip without losing integrity.
+      </p>
+      <p class="text-navy-600 leading-relaxed">
+        Useful when the problem is not a missing paragraph but a voice that does not fit the audience you need to reach.
+      </p>
+</article>
+
+    <article class="bg-white border border-navy-100 rounded-xl p-8">
+      <h2 class="text-xl font-semibold text-navy-900 mb-3 font-display">Short form scripts</h2>
+      <p class="text-navy-600 leading-relaxed mb-3">
+        Sets of short scripts for social video, stories, or clipped remarks. Written for how people under thirty actually watch: fast hooks, plain language, and a single clear point.
+      </p>
+      <p class="text-navy-600 leading-relaxed">
+        Packages usually include several scripts so you can rotate topics without sounding like a template farm.
+      </p>
+    </article>
+
+    <article class="bg-white border border-navy-100 rounded-xl p-8">
+      <h2 class="text-xl font-semibold text-navy-900 mb-3 font-display">Town hall prep</h2>
+      <p class="text-navy-600 leading-relaxed mb-3">
+        Preparation for open forums: likely questions, response frames, and language that stays steady with mixed age audiences. Helps you answer hard questions without sliding into jargon or defensiveness.
+      </p>
+      <p class="text-navy-600 leading-relaxed">
+        Built for real rooms, not only televised debate formats.
+      </p>
+    </article>
+
+    <article class="bg-white border border-navy-100 rounded-xl p-8">
+      <h2 class="text-xl font-semibold text-navy-900 mb-3 font-display">Rapid response notes</h2>
+      <p class="text-navy-600 leading-relaxed mb-3">
+        Fast turnaround guidance when news moves and you need a public line that will not age poorly online. Short, precise, and written with younger voters and share culture in mind.
+      </p>
+      <p class="text-navy-600 leading-relaxed">
+        Best for clients who already have an active relationship or subscription so context is already shared.
+      </p>
+    </article>
+
+    <article class="bg-white border border-navy-100 rounded-xl p-8">
+      <h2 class="text-xl font-semibold text-navy-900 mb-3 font-display">Debate prep support</h2>
+      <p class="text-navy-600 leading-relaxed mb-3">
+        Message frames and practice language for debates and high pressure public exchanges. Draws on competitive debate experience to stress test clarity and composure.
+      </p>
+      <p class="text-navy-600 leading-relaxed">
+        Complements policy briefings from your campaign team rather than replacing them.
+      </p>
+    </article>
+
+    <article class="bg-white border border-navy-100 rounded-xl p-8">
+      <h2 class="text-xl font-semibold text-navy-900 mb-3 font-display">Monthly and yearly support</h2>
+      <p class="text-navy-600 leading-relaxed mb-3">
+        Ongoing capacity for active campaigns: priority turnaround, multiple deliverables, and a consistent voice across events. Monthly and yearly options are listed on the Pricing page.
+      </p>
+      <p class="text-navy-600 leading-relaxed">
+        Designed for teams that need a steady partner rather than one off projects.
+      </p>
+    </article>
+  </div>
+
+  <div class="mt-12 flex flex-col sm:flex-row gap-3">
+    <a href="{{ url_for('pricing') }}" class="inline-flex justify-center bg-navy-900 text-white font-medium px-6 py-3 rounded-lg text-sm hover:bg-navy-800 transition">View pricing</a>
+    <a href="{{ url_for('book') }}" class="inline-flex justify-center border border-navy-200 text-navy-800 font-medium px-6 py-3 rounded-lg text-sm hover:border-navy-300 transition">Book a discovery call</a>
+  </div>
+</section>
+{% endblock %}

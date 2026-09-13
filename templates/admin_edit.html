@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Edit site · Resonate{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-12">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider mb-1">Admin</p>
+      <h1 class="text-2xl font-bold text-navy-900 font-display">Edit website</h1>
+      <p class="text-sm text-navy-500 mt-1">Change public copy here. Saves to the site immediately.</p>
+    </div>
+    <div class="flex gap-3 text-sm">
+      <a href="{{ url_for('admin') }}" class="text-navy-600 hover:text-navy-900">Dashboard</a>
+      <a href="{{ url_for('index') }}" class="text-navy-600 hover:text-navy-900" target="_blank">View site</a>
+      <a href="{{ url_for('admin_logout') }}" class="text-navy-600 hover:text-navy-900">Log out</a>
+    </div>
+  </div>
+
+  <form method="POST" class="space-y-10">
+    {% for page, items in by_page.items() %}
+      <section class="bg-white border border-navy-100 rounded-xl p-6">
+        <h2 class="text-lg font-semibold text-navy-900 mb-4 capitalize font-display">{{ page }} page</h2>
+        <div class="space-y-5">
+          {% for item in items %}
+            <div>
+              <label class="label">{{ item.label }}</label>
+              <p class="text-xs text-navy-400 mb-1">Key: {{ item.key }}</p>
+              {% if item.value and item.value|length > 120 %}
+                <textarea name="content_{{ item.key }}" rows="6" class="input-field">{{ item.value }}</textarea>
+              {% else %}
+                <textarea name="content_{{ item.key }}" rows="3" class="input-field">{{ item.value }}</textarea>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+    {% else %}
+      <p class="text-navy-500">No content fields yet. Add one below, then restart once if the database was just created.</p>
+    {% endfor %}
+
+    <button type="submit" class="w-full sm:w-auto bg-navy-900 text-white font-medium px-8 py-3 rounded-lg text-sm hover:bg-navy-800 transition">
+      Save all changes
+    </button>
+  </form>
+
+  <section class="mt-12 bg-navy-50 border border-navy-100 rounded-xl p-6">
+    <h2 class="text-lg font-semibold text-navy-900 mb-3">Add a new field</h2>
+    <form method="POST" action="{{ url_for('admin_edit_add') }}" class="grid sm:grid-cols-2 gap-4">
+      <div>
+        <label class="label">Key (no spaces)</label>
+        <input type="text" name="key" required class="input-field" placeholder="e.g. services_intro">
+      </div>
+      <div>
+        <label class="label">Label</label>
+        <input type="text" name="label" required class="input-field" placeholder="e.g. Services intro">
+      </div>
+      <div>
+        <label class="label">Page group</label>
+        <input type="text" name="page" class="input-field" value="general" placeholder="home, about, who…">
+      </div>
+      <div>
+        <label class="label">Starting text</label>
+        <input type="text" name="value" class="input-field">
+      </div>
+      <div class="sm:col-span-2">
+        <button type="submit" class="bg-white border border-navy-200 text-navy-800 font-medium px-5 py-2.5 rounded-lg text-sm hover:border-navy-300 transition">
+          Add field
+        </button>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}

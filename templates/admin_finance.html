@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}Finance · Resonate{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-10">
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider">Admin</p>
+      <h1 class="text-2xl font-bold text-navy-900 font-display">Finance</h1>
+    </div>
+    <div class="flex flex-wrap gap-3 text-sm">
+      <a href="{{ url_for('admin') }}" class="text-navy-600 hover:text-navy-900">Dashboard</a>
+      <a href="{{ url_for('admin_insights') }}" class="text-navy-600 hover:text-navy-900">AI insights</a>
+      <a href="{{ url_for('admin_edit') }}" class="text-navy-600 hover:text-navy-900">Edit site</a>
+      <a href="{{ url_for('admin_logout') }}" class="text-navy-600 hover:text-navy-900">Log out</a>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-3 gap-4 mb-10">
+    <div class="bg-white border border-navy-100 rounded-xl p-5">
+      <p class="text-xs text-navy-500 uppercase tracking-wide">Total revenue</p>
+      <p class="text-2xl font-bold text-navy-900 mt-1">${{ '%.0f'|format(total_revenue) }}</p>
+    </div>
+    <div class="bg-white border border-navy-100 rounded-xl p-5">
+      <p class="text-xs text-navy-500 uppercase tracking-wide">Payments logged</p>
+      <p class="text-2xl font-bold text-navy-900 mt-1">{{ payment_count }}</p>
+    </div>
+    <div class="bg-white border border-navy-100 rounded-xl p-5">
+      <p class="text-xs text-navy-500 uppercase tracking-wide">Average payment</p>
+      <p class="text-2xl font-bold text-navy-900 mt-1">${{ '%.0f'|format(avg_payment) }}</p>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-8 mb-10">
+    <section class="bg-white border border-navy-100 rounded-xl p-6">
+      <h2 class="font-semibold text-navy-900 mb-4">Clients by contribution</h2>
+      {% if client_totals %}
+      <ul class="divide-y divide-navy-50">
+        {% for c in client_totals %}
+        <li class="py-3 flex justify-between gap-4 text-sm">
+          <div>
+            <p class="font-medium text-navy-900">{{ c.name }}</p>
+            <p class="text-navy-500 text-xs">{{ c.email }} · {{ c.payment_count }} payment{{ 's' if c.payment_count != 1 else '' }}</p>
+          </div>
+          <p class="font-semibold text-navy-900 whitespace-nowrap">${{ '%.0f'|format(c.total) }}</p>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-sm text-navy-500">No payments yet. Add one below.</p>
+      {% endif %}
+    </section>
+
+    <section class="bg-white border border-navy-100 rounded-xl p-6">
+      <h2 class="font-semibold text-navy-900 mb-4">Most profitable services</h2>
+      {% if service_totals %}
+      <ul class="divide-y divide-navy-50">
+        {% for s in service_totals %}
+        <li class="py-3 flex justify-between gap-4 text-sm">
+          <div>
+            <p class="font-medium text-navy-900">{{ s.service }}</p>
+            <p class="text-navy-500 text-xs">{{ s.count }} payment{{ 's' if s.count != 1 else '' }}</p>
+          </div>
+          <p class="font-semibold text-navy-900 whitespace-nowrap">${{ '%.0f'|format(s.total) }}</p>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-sm text-navy-500">Service totals appear after you log payments with a service name.</p>
+      {% endif %}
+    </section>
+  </div>
+
+  <section class="bg-white border border-navy-100 rounded-xl p-6 mb-10">
+    <h2 class="font-semibold text-navy-900 mb-4">Record a payment</h2>
+    <form method="POST" class="grid sm:grid-cols-2 gap-4">
+      <div>
+        <label class="label">Client name</label>
+        <input type="text" name="client_name" class="input-field" list="client-names" placeholder="Alex Rivera">
+        <datalist id="client-names">
+          {% for c in clients %}<option value="{{ c.name }}"></option>{% endfor %}
+        </datalist>
+      </div>
+      <div>
+        <label class="label">Client email</label>
+        <input type="email" name="client_email" class="input-field">
+      </div>
+      <div>
+        <label class="label">Amount (USD)</label>
+        <input type="number" step="0.01" min="0" name="amount" required class="input-field" placeholder="425">
+      </div>
+      <div>
+        <label class="label">Service</label>
+        <input type="text" name="service" class="input-field" list="service-list" placeholder="Speech + coaching">
+        <datalist id="service-list">
+          <option value="Speech draft">
+          <option value="Speech + coaching">
+          <option value="Messaging strategy">
+          <option value="Short form scripts">
+          <option value="Town hall prep">
+          <option value="Rapid response">
+          <option value="Debate prep">
+          <option value="Monthly retainer">
+          <option value="Yearly subscription">
+        </datalist>
+      </div>
+      <div>
+        <label class="label">Method</label>
+        <select name="method" class="input-field">
+          <option value="Zelle">Zelle</option>
+          <option value="Venmo">Venmo</option>
+          <option value="PayPal">PayPal</option>
+          <option value="Card">Card</option>
+          <option value="Apple Pay">Apple Pay</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div>
+        <label class="label">Paid on</label>
+        <input type="date" name="paid_at" class="input-field">
+      </div>
+      <div class="sm:col-span-2">
+        <label class="label">Notes</label>
+        <input type="text" name="notes" class="input-field" placeholder="Optional">
+      </div>
+      <div class="sm:col-span-2">
+        <button type="submit" class="bg-navy-900 text-white font-medium px-6 py-2.5 rounded-lg text-sm hover:bg-navy-800 transition">Save payment</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="bg-white border border-navy-100 rounded-xl overflow-hidden">
+    <div class="px-6 py-4 border-b border-navy-50">
+      <h2 class="font-semibold text-navy-900">All payments</h2>
+    </div>
+    {% if payments %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left">
+        <thead class="bg-navy-50 text-navy-600">
+          <tr>
+            <th class="px-4 py-3 font-medium">Date</th>
+            <th class="px-4 py-3 font-medium">Client</th>
+            <th class="px-4 py-3 font-medium">Service</th>
+            <th class="px-4 py-3 font-medium">Method</th>
+            <th class="px-4 py-3 font-medium">Amount</th>
+            <th class="px-4 py-3 font-medium"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-navy-50">
+          {% for p in payments %}
+          <tr>
+            <td class="px-4 py-3 text-navy-600">{{ p.paid_at or '—' }}</td>
+            <td class="px-4 py-3">
+              <p class="font-medium text-navy-900">{{ p.client_name or '—' }}</p>
+              <p class="text-xs text-navy-500">{{ p.client_email }}</p>
+            </td>
+            <td class="px-4 py-3 text-navy-600">{{ p.service or '—' }}</td>
+            <td class="px-4 py-3 text-navy-600">{{ p.method or '—' }}</td>
+            <td class="px-4 py-3 font-semibold text-navy-900">${{ '%.2f'|format(p.amount) }}</td>
+            <td class="px-4 py-3">
+              <form method="POST" action="{{ url_for('admin_finance_delete', payment_id=p.id) }}" onsubmit="return confirm('Delete this payment?');">
+                <button type="submit" class="text-coral-600 text-xs hover:underline">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="px-6 py-8 text-sm text-navy-500">No payments logged yet.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

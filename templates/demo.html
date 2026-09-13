@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Demo · Resonate{% endblock %}
+{% block page_emblem %}{% endblock %}
+{% block content %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
+    <div class="flex items-center gap-4 mb-8">
+    <span class="inline-flex bg-white rounded-xl p-2 border border-navy-100 shrink-0">
+      <img src="{ url_for('static', filename='img/logo-emblem-light-clean.png') }" alt="" class="h-12 w-auto">
+    </span>
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider">Demo</p>
+      <h1 class="text-3xl sm:text-4xl font-bold text-navy-900 tracking-tight font-display">Before and after</h1>
+    </div>
+  </div>
+  {% if demo_intro %}
+  <p class="text-base sm:text-lg text-navy-600 leading-relaxed mb-12 max-w-2xl">{{ demo_intro }}</p>
+  {% endif %}
+
+  <h2 class="text-xl font-semibold text-navy-900 mb-4 font-display">Trump inaugural (2017)</h2>
+  <div class="space-y-4 mb-12">
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="bg-white border border-navy-100 rounded-xl p-5">
+        <p class="text-xs font-medium text-navy-400 uppercase tracking-wider mb-2">Original</p>
+        <p class="text-navy-700 leading-relaxed text-sm sm:text-base">{{ trump_1_orig }}</p>
+      </div>
+      <div class="bg-navy-50 border border-navy-100 rounded-xl p-5">
+        <p class="text-xs font-medium text-coral-500 uppercase tracking-wider mb-2">Resonate rewrite</p>
+        <p class="text-navy-800 leading-relaxed text-sm sm:text-base">{{ trump_1_rewrite }}</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="bg-white border border-navy-100 rounded-xl p-5">
+        <p class="text-xs font-medium text-navy-400 uppercase tracking-wider mb-2">Original</p>
+        <p class="text-navy-700 leading-relaxed text-sm sm:text-base">{{ trump_2_orig }}</p>
+      </div>
+      <div class="bg-navy-50 border border-navy-100 rounded-xl p-5">
+        <p class="text-xs font-medium text-coral-500 uppercase tracking-wider mb-2">Resonate rewrite</p>
+        <p class="text-navy-800 leading-relaxed text-sm sm:text-base">{{ trump_2_rewrite }}</p>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="text-xl font-semibold text-navy-900 mb-4 font-display">Biden inaugural (2021)</h2>
+  <div class="space-y-4">
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="bg-white border border-navy-100 rounded-xl p-5">
+        <p class="text-xs font-medium text-navy-400 uppercase tracking-wider mb-2">Original</p>
+        <p class="text-navy-700 leading-relaxed text-sm sm:text-base">{{ biden_1_orig }}</p>
+      </div>
+      <div class="bg-navy-50 border border-navy-100 rounded-xl p-5">
+        <p class="text-xs font-medium text-coral-500 uppercase tracking-wider mb-2">Resonate rewrite</p>
+        <p class="text-navy-800 leading-relaxed text-sm sm:text-base">{{ biden_1_rewrite }}</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="bg-white border border-navy-100 rounded-xl p-5">
+        <p class="text-xs font-medium text-navy-400 uppercase tracking-wider mb-2">Original</p>
+        <p class="text-navy-700 leading-relaxed text-sm sm:text-base">{{ biden_2_orig }}</p>
+      </div>
+      <div class="bg-navy-50 border border-navy-100 rounded-xl p-5">
+        <p class="text-xs font-medium text-coral-500 uppercase tracking-wider mb-2">Resonate rewrite</p>
+        <p class="text-navy-800 leading-relaxed text-sm sm:text-base">{{ biden_2_rewrite }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

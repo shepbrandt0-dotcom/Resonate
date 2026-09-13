@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{% block title %}Resonate{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              50: '#f4f6f9', 100: '#e8ecf2', 200: '#d1dae6', 300: '#a9b8cc',
+              400: '#7a91ad', 500: '#5a7393', 600: '#465c78', 700: '#3a4c63',
+              800: '#324054', 900: '#1B2A4A', 950: '#121c30',
+            },
+            coral: {
+              50: '#fdf6f4', 100: '#fbeae6', 200: '#f6d5cd', 300: '#eeb5a8',
+              400: '#e28b78', 500: '#C45C48', 600: '#b04a38', 700: '#933d30',
+              800: '#7a352c', 900: '#663029',
+            },
+            cream: { 50: '#F7F5F2', 100: '#f0ede8', 200: '#e5e0d8' }
+          },
+          fontFamily: {
+            sans: ['Outfit', 'system-ui', 'sans-serif'],
+            display: ['Fraunces', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', system-ui, sans-serif; color: #3a4c63; }
+    h1, h2, h3, .font-display { font-family: 'Fraunces', Georgia, serif; color: #1B2A4A; }
+    .input-field {
+      width: 100%; padding: 0.7rem 1rem; border-radius: 0.5rem;
+      border: 1px solid #d1dae6; background: white; color: #121c30; outline: none;
+      font-size: 16px; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .input-field:focus { border-color: #5a7393; box-shadow: 0 0 0 3px rgba(90,115,147,0.15); }
+    .label { display: block; font-size: 0.875rem; font-weight: 500; color: #465c78; margin-bottom: 0.4rem; }
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: block; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { overflow-x: hidden; }
+    a, button { touch-action: manipulation; }
+    input, textarea, select, button { font-size: 16px; }
+    @media (max-width: 640px) {
+      #chat-panel { width: calc(100vw - 1.5rem); max-width: 22rem; }
+      #chat-widget { bottom: 1rem; right: 0.75rem; }
+    }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body class="bg-cream-50 antialiased min-h-screen flex flex-col">
+
+  <nav class="bg-white border-b border-navy-100 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      <div class="flex justify-between items-center h-16">
+        <a href="{{ url_for('index') }}" class="flex items-center">
+          <img src="{{ url_for('static', filename='img/logo-wordmark-header.png') }}" alt="Resonate" class="h-11 sm:h-12 w-auto">
+        </a>
+        <div class="flex items-center gap-3">
+          <a href="{{ url_for('about') }}" class="hidden sm:inline-flex items-center text-sm font-medium text-navy-700 hover:text-navy-900 px-2">
+            About
+          </a>
+          <a href="{{ url_for('book') }}" class="inline-flex items-center justify-center bg-navy-900 text-white px-5 h-11 sm:h-12 rounded-lg text-sm font-medium hover:bg-navy-800 transition">
+            Book now
+          </a>
+          <button type="button" id="menu-btn" class="p-2 text-navy-700 rounded-lg hover:bg-navy-50" aria-label="Menu" aria-expanded="false">
+            <svg id="icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" class="border-t border-navy-100 bg-white">
+            <div class="px-4 py-3 space-y-1 text-sm max-w-5xl mx-auto">
+        <a href="{{ url_for('who') }}" class="block py-2.5 text-navy-600">Who it is for</a>
+        <a href="{{ url_for('product') }}" class="block py-2.5 text-navy-600">What you get</a>
+        <a href="{{ url_for('process') }}" class="block py-2.5 text-navy-600">How it works</a>
+        <a href="{{ url_for('faq') }}" class="block py-2.5 text-navy-600">FAQ</a>
+        <a href="{{ url_for('demo_page') }}" class="block py-2.5 text-navy-600">Demo</a>
+        <a href="{{ url_for('reviews') }}" class="block py-2.5 text-navy-600">Reviews</a>
+        <a href="{{ url_for('pricing') }}" class="block py-2.5 text-navy-600">Pricing</a>
+        <a href="{{ url_for('pay') }}" class="block py-2.5 text-navy-600">Pay</a>
+        <a href="{{ url_for('intake') }}" class="block py-2.5 text-navy-700 font-medium">Client intake</a>
+        <a href="{{ url_for('portal_login') }}" class="block py-2.5 text-navy-700 font-medium">Member portal</a>
+        <a href="{{ url_for('book') }}" class="block py-2.5 font-medium text-navy-900">Book a discovery call</a>
+        <a href="{{ url_for('about') }}" class="block py-2.5 text-navy-600 sm:hidden">About & contact</a>
+      </div>
+    </div>
+  </nav>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="max-w-5xl mx-auto px-4 pt-4 w-full">
+        {% for category, message in messages %}
+          <div class="mb-2 px-4 py-2.5 rounded-lg text-sm {% if category == 'success' %}bg-navy-50 text-navy-800 border border-navy-100{% else %}bg-coral-50 text-coral-800 border border-coral-100{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main class="flex-1 relative">
+    <div class="pointer-events-none absolute inset-0 -z-10">
+      <img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1600&q=80" alt="" class="w-full h-full object-cover opacity-[0.06]">
+    </div>
+    {% block page_emblem %}{% endblock %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="border-t border-navy-100 bg-navy-900 mt-auto">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 flex flex-col sm:flex-row justify-between items-center gap-6">
+      <div class="bg-navy-900 rounded-lg p-2">
+        <img src="{{ url_for('static', filename='img/logo-wordmark-dark-clean.png') }}" alt="Resonate" class="h-8 w-auto">
+      </div>
+      <div class="flex flex-wrap justify-center gap-5 text-sm text-navy-300">
+        <a href="{{ url_for('product') }}" class="hover:text-white">Services</a>
+        <a href="{{ url_for('pricing') }}" class="hover:text-white">Pricing</a>
+        <a href="{{ url_for('about') }}" class="hover:text-white">About</a>
+        <a href="{{ url_for('intake') }}" class="hover:text-white">Intake</a>
+        <a href="{{ url_for('portal_login') }}" class="hover:text-white">Portal</a>
+        <a href="{{ url_for('admin_login') }}" class="hover:text-white">Admin</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="chat-widget" class="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
+    <div id="chat-panel" class="hidden w-80 sm:w-96 bg-white border border-navy-100 rounded-2xl shadow-xl overflow-hidden flex flex-col" style="max-height: 28rem;">
+      <div class="bg-navy-900 text-white px-4 py-3 flex justify-between items-center">
+        <div>
+          <p class="font-semibold text-sm">Resonate Guide</p>
+          <p class="text-xs text-navy-300">Site navigation help</p>
+        </div>
+        <button id="chat-close" class="text-navy-300 hover:text-white text-lg leading-none">&times;</button>
+      </div>
+      <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3 text-sm bg-cream-50" style="min-height: 12rem;">
+        <div class="bg-white border border-navy-100 rounded-lg px-3 py-2 text-navy-600">Ask anything about Resonate: services, pricing, process, Shepherd’s background, payments, portal, or the no-AI policy.</div>
+      </div>
+      <form id="chat-form" class="border-t border-navy-100 p-3 flex gap-2 bg-white">
+        <input id="chat-input" type="text" placeholder="Ask a question..." class="flex-1 text-sm border border-navy-200 rounded-lg px-3 py-2 outline-none" autocomplete="off">
+        <button type="submit" class="bg-navy-900 text-white text-sm font-medium px-3 py-2 rounded-lg">Send</button>
+      </form>
+    </div>
+    <button id="chat-toggle" class="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-14 h-14 shadow-lg flex items-center justify-center" aria-label="Open chat">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+    </button>
+  </div>
+
+  <script>
+    const btn = document.getElementById('menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    const iconOpen = document.getElementById('icon-open');
+    const iconClose = document.getElementById('icon-close');
+    if (btn && menu) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const isOpen = menu.classList.toggle('open');
+        if (iconOpen) iconOpen.classList.toggle('hidden', isOpen);
+        if (iconClose) iconClose.classList.toggle('hidden', !isOpen);
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    }
+    (function() {
+      const toggle = document.getElementById('chat-toggle');
+      const panel = document.getElementById('chat-panel');
+      const closeBtn = document.getElementById('chat-close');
+      const form = document.getElementById('chat-form');
+      const input = document.getElementById('chat-input');
+      const messages = document.getElementById('chat-messages');
+
+      const KB = [
+        {
+          keys: ['price', 'pricing', 'cost', 'how much', 'fee', 'rates', 'package', 'subscription', 'monthly', 'yearly', 'retainer'],
+          answer: 'Pricing is listed on the Pricing page. Core packages: Speech draft $225, Speech + coaching $425, Messaging strategy memo $175. Add-ons include short form scripts $100, town hall prep $200, rapid response $125, and debate prep $300. Ongoing support is $900 per month or $9,000 per year (two months free vs paying monthly). Discovery calls are free. Open Pricing in the menu for the full breakdown.'
+        },
+        {
+          keys: ['book', 'call', 'discovery', 'schedule', 'meeting', 'appointment'],
+          answer: 'Book a free discovery call with the Book now button in the header or from the Book page. Calls usually run 20 to 30 minutes. You will map the audience, the goal, constraints, and whether the project is a fit. There is no obligation and no charge for the call.'
+        },
+        {
+          keys: ['intake', 'submit', 'brief', 'start project', 'onboard'],
+          answer: 'Client intake is in the menu. You share audience, goal, any existing draft, key messages, constraints, and tone notes. After you submit, you receive a portal access code so you can track status and documents.'
+        },
+        {
+          keys: ['portal', 'login', 'access code', 'member', 'documents', 'deliverable', 'feedback'],
+          answer: 'The Member portal is in the menu. Log in with the access code from your intake. Inside you can see project status, open delivered documents, and leave feedback. Demo code for testing: DEMO2026.'
+        },
+        {
+          keys: ['pay', 'payment', 'zelle', 'venmo', 'paypal', 'apple pay', 'credit', 'debit', 'card', 'invoice'],
+          answer: 'The Pay page supports Zelle (shep.brandt@outlook.com or 719-654-3960), Venmo (@Shepherd-Brandt), PayPal, and card or Apple Pay setup notes. Choose a package, pay, then email a short confirmation with your name and what you paid for. Complete intake if you have not already.'
+        },
+        {
+          keys: ['service', 'offer', 'what do you', 'what does resonate', 'provide', 'help with', 'speech', 'coaching', 'messaging', 'script', 'town hall', 'debate', 'rapid'],
+          answer: 'Resonate provides human-led speech drafts and rewrites, delivery coaching, messaging strategy memos, short form scripts, town hall prep, rapid response notes, debate prep support, and monthly or yearly campaign support. The focus is language that lands with voters under thirty without sounding forced. Full detail is on the Services page.'
+        },
+        {
+          keys: ['ai', 'artificial', 'chatgpt', 'generated', 'bot write'],
+          answer: 'Client writing, coaching, and strategy are not done by AI. Shepherd writes drafts and coaching notes by hand. The site chat only helps people navigate and understand the business. It is separate from client deliverables.'
+        },
+        {
+          keys: ['who', 'shepherd', 'about', 'stoa', 'cssa', 'crank', 'background', 'experience', 'nationals', 'debate'],
+          answer: 'Shepherd Brandt founded Resonate. He competed in speech and debate through Stoa and advanced to nationals four times, brings political consulting experience through CSSA, and served on Congressman Jeff Crank’s staff. The combination is competitive persuasion training plus real political communication constraints. More is on the About page, including phone and email.'
+        },
+        {
+          keys: ['contact', 'email', 'phone', 'reach', 'call shepherd'],
+          answer: 'Shepherd Brandt: (719) 654-3960 and shep.brandt@outlook.com. Both are on the About page under contact. You can also book a discovery call or submit intake from the menu.'
+        },
+        {
+          keys: ['who for', 'candidate', 'politician', 'campaign', 'advocacy', 'client', 'audience'],
+          answer: 'Resonate is for candidates, elected officials, and campaign or advocacy teams that need messages to land with voters under thirty. Work is available across the political spectrum. See Who it is for in the menu.'
+        },
+        {
+          keys: ['process', 'how it works', 'steps', 'timeline', 'turnaround'],
+          answer: 'Simple path: (1) Discovery call to map audience and goals, (2) Create or coach with drafts and notes delivered in the portal, (3) Feedback loop for a focused revision. Standard projects are typically a few business days; retainers and rapid response get priority. Exact timing is confirmed on the call.'
+        },
+        {
+          keys: ['mission', 'slogan', 'tagline', 'purpose', 'why'],
+          answer: 'Mission: Speak so the next generation hears you. Resonate exists to close the gap when political language is written by people a generation removed from younger voters.'
+        },
+        {
+          keys: ['gen z', 'young', 'under 30', '18', 'youth', 'cringe'],
+          answer: 'The specialty is voters roughly 18 to 30. The goal is authenticity without trying too hard: clear structure from competitive speech training, plus fluency in how younger audiences actually hear and share messages online and in person.'
+        },
+        {
+          keys: ['party', 'republican', 'democrat', 'bipartisan', 'independent'],
+          answer: 'Resonate works across the political spectrum. The focus is clear communication with younger voters, not advancing a single party line.'
+        },
+        {
+          keys: ['admin', 'edit website', 'cms'],
+          answer: 'Site operators can log in at /admin/login to manage intakes and edit public website copy. That area is not for clients.'
+        },
+        {
+          keys: ['why', 'mom', 'love', 'communication is a lifelong', 'turnout', 'statistic', 'stats'],
+          answer: 'Shepherd\'s Why is personal and practical. He loves communication and people. His mom says Communication is a lifelong struggle. On the data: CIRCLE estimated about 47% of youth 18 to 29 voted in 2024; only about 18% of 18 and 19 year olds voted in the 2022 midterms. The Civics Center found about 42% of 18 year olds registered for 2026 vs about 82% of ages 45 to 79. Workplace surveys show generational communication styles as a major challenge, and Korn Ferry reported only 17% of Gen Z vs 45% of boomers had no trouble working across generations. Full citations are on the About page.'
+        },
+        {
+          keys: ['hello', 'hi', 'hey', 'help'],
+          answer: 'Hello. I can go deep on pricing, services, booking, intake, the member portal, payments, Shepherd\'s background, the no-AI policy, process, or who the work is for. Ask anything about Resonate.'
+        }
+      ];
+
+      function addMsg(text, isUser) {
+        const div = document.createElement('div');
+        div.className = isUser
+          ? 'bg-navy-900 text-white rounded-lg px-3 py-2 ml-8'
+          : 'bg-white border border-navy-100 rounded-lg px-3 py-2 text-navy-600 mr-4';
+        div.textContent = text;
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      function score(q, keys) {
+        let s = 0;
+        for (const k of keys) {
+          if (q.includes(k)) s += k.length > 4 ? 2 : 1;
+        }
+        return s;
+      }
+
+      function reply(q) {
+        const t = q.toLowerCase();
+        let best = null;
+        let bestScore = 0;
+        for (const item of KB) {
+          const s = score(t, item.keys);
+          if (s > bestScore) {
+            bestScore = s;
+            best = item;
+          }
+        }
+        if (best && bestScore > 0) return best.answer;
+        return 'I can explain Resonate in depth: pricing and subscriptions, every service (speeches, coaching, strategy, scripts, town halls, debate, rapid response), booking and intake, the member portal, payments (Zelle, Venmo, PayPal, card), Shepherd’s background, the no-AI client work policy, process and turnaround, and who the work is for. Try asking about one of those, or open FAQ / Services / Pricing in the menu.';
+      }
+
+      if (toggle) toggle.addEventListener('click', () => panel.classList.toggle('hidden'));
+      if (closeBtn) closeBtn.addEventListener('click', () => panel.classList.add('hidden'));
+      if (form) form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const q = input.value.trim();
+        if (!q) return;
+        addMsg(q, true);
+        input.value = '';
+        setTimeout(() => addMsg(reply(q), false), 350);
+      });
+    })();
+  </script>
+</body>
+</html>

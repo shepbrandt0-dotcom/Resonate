@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Insights · Resonate{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-10">
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider">Admin</p>
+      <h1 class="text-2xl font-bold text-navy-900 font-display">Earnings insights</h1>
+      <p class="text-sm text-navy-500 mt-1">Analysis of your payment log: what is working, what to fix, and a simple forecast.</p>
+    </div>
+    <div class="flex flex-wrap gap-3 text-sm">
+      <a href="{{ url_for('admin_finance') }}" class="text-navy-600 hover:text-navy-900">Finance</a>
+      <a href="{{ url_for('admin') }}" class="text-navy-600 hover:text-navy-900">Dashboard</a>
+      <a href="{{ url_for('admin_logout') }}" class="text-navy-600 hover:text-navy-900">Log out</a>
+    </div>
+  </div>
+
+  <div class="bg-navy-900 text-white rounded-xl p-6 mb-8">
+    <p class="text-navy-300 text-xs uppercase tracking-wide">Recorded revenue</p>
+    <p class="text-3xl font-bold mt-1">${{ '%.0f'|format(total_revenue) }}</p>
+  </div>
+
+  <section class="mb-8">
+    <h2 class="font-semibold text-navy-900 mb-3 font-display">Snapshot</h2>
+    <ul class="space-y-2">
+      {% for item in insights %}
+      <li class="bg-white border border-navy-100 rounded-lg px-4 py-3 text-sm text-navy-700">{{ item }}</li>
+      {% else %}
+      <li class="text-sm text-navy-500">Log payments to unlock a snapshot.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="font-semibold text-emerald-800 mb-3 font-display">What is working</h2>
+    <ul class="space-y-2">
+      {% for item in working %}
+      <li class="bg-emerald-50 border border-emerald-100 rounded-lg px-4 py-3 text-sm text-emerald-900">{{ item }}</li>
+      {% else %}
+      <li class="text-sm text-navy-500">Not enough pattern yet.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="font-semibold text-coral-800 mb-3 font-display">Suggested fixes</h2>
+    <ul class="space-y-2">
+      {% for item in fixes %}
+      <li class="bg-coral-50 border border-coral-100 rounded-lg px-4 py-3 text-sm text-coral-900">{{ item }}</li>
+      {% else %}
+      <li class="text-sm text-navy-500">No urgent fixes flagged.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="font-semibold text-navy-900 mb-3 font-display">Earnings outlook</h2>
+    <ul class="space-y-2">
+      {% for item in predictions %}
+      <li class="bg-navy-50 border border-navy-100 rounded-lg px-4 py-3 text-sm text-navy-800">{{ item }}</li>
+      {% else %}
+      <li class="text-sm text-navy-500">Need more dated payments for forecasts.</li>
+      {% endfor %}
+    </ul>
+    <p class="text-xs text-navy-400 mt-4">This is rule-based analysis of your own payment data, not financial advice. Predictions use simple averages and recent trends.</p>
+  </section>
+</div>
+{% endblock %}

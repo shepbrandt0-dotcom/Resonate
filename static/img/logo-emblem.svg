@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Stylized R with capitol, profile, sound waves - navy #1B2A4A, coral #C45C48 -->
+  <path d="M40 30 L40 170 L70 170 L70 115 L95 115 C115 115 130 105 138 90 L165 170 L198 170 L160 75 C175 65 182 50 182 35 C182 15 165 5 140 5 L40 5 Z" fill="#1B2A4A"/>
+  <!-- Inner cut for face profile area - approximated with overlay -->
+  <path d="M70 30 L70 100 L100 100 C125 100 145 80 145 50 C145 30 130 30 110 30 Z" fill="#1B2A4A"/>
+  <!-- Capitol dome simplified inside left of R -->
+  <g fill="#F7F5F2">
+    <rect x="58" y="88" width="36" height="8" rx="1"/>
+    <rect x="62" y="72" width="6" height="16"/>
+    <rect x="72" y="68" width="6" height="20"/>
+    <rect x="82" y="72" width="6" height="16"/>
+    <ellipse cx="76" cy="62" rx="22" ry="14"/>
+    <rect x="74" y="42" width="4" height="12"/>
+    <circle cx="76" cy="40" r="3"/>
+  </g>
+  <!-- Sound waves coral -->
+  <path d="M155 55 Q175 75 155 95" stroke="#C45C48" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M168 48 Q195 75 168 102" stroke="#C45C48" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M180 42 Q215 75 180 108" stroke="#C45C48" stroke-width="5" fill="none" stroke-linecap="round"/>
+</svg>

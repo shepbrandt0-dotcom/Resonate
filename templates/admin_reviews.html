@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Reviews admin · Resonate{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-10">
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider">Admin</p>
+      <h1 class="text-2xl font-bold text-navy-900 font-display">Reviews</h1>
+    </div>
+    <div class="flex flex-wrap gap-3 text-sm">
+      <a href="{{ url_for('admin') }}" class="text-navy-600 hover:text-navy-900">Dashboard</a>
+      <a href="{{ url_for('admin_edit') }}" class="text-navy-600 hover:text-navy-900">Edit site</a>
+      <a href="{{ url_for('admin_logout') }}" class="text-navy-600 hover:text-navy-900">Log out</a>
+    </div>
+  </div>
+
+  <section class="bg-white border border-navy-100 rounded-xl p-6 mb-8">
+    <h2 class="font-semibold text-navy-900 mb-3">Show reviews on the site</h2>
+    <p class="text-sm text-navy-500 mb-4">When off, the Reviews page and landing link are hidden from visitors.</p>
+    <form method="POST" class="flex flex-wrap items-center gap-3">
+      <input type="hidden" name="action" value="toggle_site">
+      <label class="inline-flex items-center gap-2 text-sm text-navy-700">
+        <input type="radio" name="reviews_enabled" value="on" {% if reviews_enabled %}checked{% endif %}> On
+      </label>
+      <label class="inline-flex items-center gap-2 text-sm text-navy-700">
+        <input type="radio" name="reviews_enabled" value="off" {% if not reviews_enabled %}checked{% endif %}> Off
+      </label>
+      <button type="submit" class="bg-navy-900 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-navy-800">Save</button>
+    </form>
+  </section>
+
+  <section class="bg-white border border-navy-100 rounded-xl p-6 mb-8">
+    <h2 class="font-semibold text-navy-900 mb-4">Add a review</h2>
+    <form method="POST" class="grid sm:grid-cols-2 gap-4">
+      <input type="hidden" name="action" value="add">
+      <div>
+        <label class="label">Name</label>
+        <input type="text" name="name" required class="input-field">
+      </div>
+      <div>
+        <label class="label">Role / title</label>
+        <input type="text" name="role" class="input-field" placeholder="Campaign manager">
+      </div>
+      <div class="sm:col-span-2">
+        <label class="label">Quote</label>
+        <textarea name="quote" required rows="3" class="input-field"></textarea>
+      </div>
+      <div>
+        <label class="label">Rating</label>
+        <select name="rating" class="input-field">
+          <option value="5">5</option>
+          <option value="4">4</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+      <div class="flex items-end">
+        <button type="submit" class="bg-navy-900 text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-navy-800">Add review</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="space-y-4">
+    <h2 class="font-semibold text-navy-900">All reviews</h2>
+    {% for r in reviews %}
+    <div class="bg-white border border-navy-100 rounded-xl p-5">
+      <p class="text-navy-800 text-sm leading-relaxed">“{{ r.quote }}”</p>
+      <p class="text-xs text-navy-500 mt-2">{{ r.name }}{% if r.role %} · {{ r.role }}{% endif %} · {{ r.rating }}/5 · {% if r.visible %}Visible{% else %}Hidden{% endif %}</p>
+      <div class="flex gap-3 mt-3">
+        <form method="POST">
+          <input type="hidden" name="action" value="toggle_review">
+          <input type="hidden" name="review_id" value="{{ r.id }}">
+          <button type="submit" class="text-sm text-navy-700 hover:underline">{% if r.visible %}Hide{% else %}Show{% endif %}</button>
+        </form>
+        <form method="POST" onsubmit="return confirm('Delete this review?');">
+          <input type="hidden" name="action" value="delete">
+          <input type="hidden" name="review_id" value="{{ r.id }}">
+          <button type="submit" class="text-sm text-coral-600 hover:underline">Delete</button>
+        </form>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-sm text-navy-500">No reviews yet.</p>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

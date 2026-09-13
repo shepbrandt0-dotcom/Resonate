@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Book · Resonate{% endblock %}
+{% block page_emblem %}{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto px-4 py-16">
+    <div class="flex items-center gap-4 mb-8">
+    <span class="inline-flex bg-white rounded-xl p-2 border border-navy-100 shrink-0">
+      <img src="{ url_for('static', filename='img/logo-emblem-light-clean.png') }" alt="" class="h-12 w-auto">
+    </span>
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider">Book</p>
+      <h1 class="text-3xl sm:text-4xl font-bold text-navy-900 tracking-tight font-display">Discovery call</h1>
+    </div>
+  </div>
+
+  <p class="text-navy-600 text-sm mb-8">20–30 minutes. No pressure.</p>
+  <form method="POST" class="space-y-4">
+    <div>
+      <label class="label">Your name *</label>
+      <input type="text" name="name" required class="input-field" placeholder="Alex Rivera">
+    </div>
+    <div>
+      <label class="label">Email *</label>
+      <input type="email" name="email" required class="input-field" placeholder="alex@campaign.org">
+    </div>
+    <div>
+      <label class="label">Organization / Campaign</label>
+      <input type="text" name="org" class="input-field">
+    </div>
+    <div>
+      <label class="label">Preferred time window</label>
+      <input type="text" name="preferred_time" class="input-field" placeholder="Weekdays after 4pm ET">
+    </div>
+    <div>
+      <label class="label">Notes</label>
+      <textarea name="notes" rows="3" class="input-field"></textarea>
+    </div>
+    <button type="submit" class="w-full bg-navy-900 text-white font-medium py-3 rounded text-sm hover:bg-navy-800 transition">Request call</button>
+  </form>
+</div>
+{% endblock %}

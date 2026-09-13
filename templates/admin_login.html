@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Admin · Resonate{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto px-4 py-24">
+  <h1 class="text-2xl font-bold text-navy-900 text-center mb-2 font-display">Admin</h1>
+  <p class="text-center text-navy-500 text-sm mb-8">Enter your password to continue.</p>
+  <form method="POST" action="{{ url_for('admin_login') }}" class="bg-white rounded-2xl border border-navy-100 p-6 space-y-4">
+    <div>
+      <label class="label" for="password">Password</label>
+      <input id="password" type="password" name="password" required autofocus class="input-field" autocomplete="current-password">
+    </div>
+    <button type="submit" class="w-full bg-navy-900 text-white font-medium py-3 rounded-lg text-sm hover:bg-navy-800 transition">
+      Log in
+    </button>
+  </form>
+</div>
+{% endblock %}

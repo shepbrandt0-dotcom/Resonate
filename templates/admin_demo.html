@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Demo admin · Resonate{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-10">
+  <div class="flex flex-wrap justify-between gap-4 mb-8">
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider">Admin</p>
+      <h1 class="text-2xl font-bold text-navy-900 font-display">Inaugural demo</h1>
+    </div>
+    <div class="flex gap-3 text-sm">
+      <a href="{{ url_for('admin') }}" class="text-navy-600 hover:text-navy-900">Dashboard</a>
+      <a href="{{ url_for('admin_reviews') }}" class="text-navy-600 hover:text-navy-900">Reviews</a>
+      <a href="{{ url_for('admin_logout') }}" class="text-navy-600 hover:text-navy-900">Log out</a>
+    </div>
+  </div>
+
+  <form method="POST" class="space-y-6">
+    <div class="bg-white border border-navy-100 rounded-xl p-6">
+      <h2 class="font-semibold text-navy-900 mb-3">Visibility</h2>
+      <label class="inline-flex items-center gap-2 text-sm mr-4">
+        <input type="radio" name="demo_enabled" value="on" {% if data.demo_enabled in ['on','true','1','yes'] %}checked{% endif %}> On
+      </label>
+      <label class="inline-flex items-center gap-2 text-sm">
+        <input type="radio" name="demo_enabled" value="off" {% if data.demo_enabled not in ['on','true','1','yes'] %}checked{% endif %}> Off
+      </label>
+    </div>
+
+    <div class="bg-white border border-navy-100 rounded-xl p-6 space-y-4">
+      <div>
+        <label class="label">Heading</label>
+        <input type="text" name="demo_heading" class="input-field" value="{{ data.demo_heading }}">
+      </div>
+      <div>
+        <label class="label">Intro</label>
+        <textarea name="demo_intro" rows="3" class="input-field">{{ data.demo_intro }}</textarea>
+      </div>
+    </div>
+
+    <div class="bg-white border border-navy-100 rounded-xl p-6 space-y-4">
+      <h2 class="font-semibold text-navy-900">Trump passages</h2>
+      <div>
+        <label class="label">Passage 1 original</label>
+        <textarea name="demo_trump_1_orig" rows="3" class="input-field">{{ data.demo_trump_1_orig }}</textarea>
+      </div>
+      <div>
+        <label class="label">Passage 1 rewrite</label>
+        <textarea name="demo_trump_1_rewrite" rows="3" class="input-field">{{ data.demo_trump_1_rewrite }}</textarea>
+      </div>
+      <div>
+        <label class="label">Passage 2 original</label>
+        <textarea name="demo_trump_2_orig" rows="3" class="input-field">{{ data.demo_trump_2_orig }}</textarea>
+      </div>
+      <div>
+        <label class="label">Passage 2 rewrite</label>
+        <textarea name="demo_trump_2_rewrite" rows="3" class="input-field">{{ data.demo_trump_2_rewrite }}</textarea>
+      </div>
+    </div>
+
+    <div class="bg-white border border-navy-100 rounded-xl p-6 space-y-4">
+      <h2 class="font-semibold text-navy-900">Biden passages</h2>
+      <div>
+        <label class="label">Passage 1 original</label>
+        <textarea name="demo_biden_1_orig" rows="3" class="input-field">{{ data.demo_biden_1_orig }}</textarea>
+      </div>
+      <div>
+        <label class="label">Passage 1 rewrite</label>
+        <textarea name="demo_biden_1_rewrite" rows="3" class="input-field">{{ data.demo_biden_1_rewrite }}</textarea>
+      </div>
+      <div>
+        <label class="label">Passage 2 original</label>
+        <textarea name="demo_biden_2_orig" rows="3" class="input-field">{{ data.demo_biden_2_orig }}</textarea>
+      </div>
+      <div>
+        <label class="label">Passage 2 rewrite</label>
+        <textarea name="demo_biden_2_rewrite" rows="3" class="input-field">{{ data.demo_biden_2_rewrite }}</textarea>
+      </div>
+    </div>
+
+    <button type="submit" class="bg-navy-900 text-white font-medium px-6 py-3 rounded-lg text-sm hover:bg-navy-800">Save demo</button>
+  </form>
+</div>
+{% endblock %}

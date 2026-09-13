@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}About · Resonate{% endblock %}
+{% block page_emblem %}{% endblock %}
+{% block content %}
+<section class="max-w-3xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
+    <div class="flex items-center gap-4 mb-8">
+    <span class="inline-flex bg-white rounded-xl p-2 border border-navy-100 shrink-0">
+      <img src="{ url_for('static', filename='img/logo-emblem-light-clean.png') }" alt="" class="h-12 w-auto">
+    </span>
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider">About</p>
+      <h1 class="text-3xl sm:text-4xl font-bold text-navy-900 tracking-tight font-display">The person behind the work</h1>
+    </div>
+  </div>
+
+  <!-- Contact at top -->
+  <div id="contact" class="bg-white border border-navy-100 rounded-xl p-6 sm:p-8 mb-12">
+    <p class="text-xs font-medium text-coral-500 uppercase tracking-wider mb-4">Contact</p>
+    <div class="grid sm:grid-cols-5 gap-8 items-start">
+      <div class="sm:col-span-2">
+        <div class="aspect-square max-w-[160px] rounded-2xl bg-navy-100 overflow-hidden mb-4 border border-navy-100">
+          <div class="w-full h-full bg-gradient-to-br from-navy-700 to-navy-900 flex items-center justify-center">
+            <span class="text-white text-4xl font-bold tracking-tight font-display">SB</span>
+          </div>
+        </div>
+        <h2 class="text-xl font-semibold text-navy-900">{{ contact_name }}</h2>
+        <p class="text-navy-500 text-sm mt-1">Founder, Resonate</p>
+      </div>
+      <div class="sm:col-span-3 space-y-5">
+        <div>
+          <p class="text-xs font-medium text-navy-400 uppercase tracking-wider mb-1">Phone</p>
+          <a href="tel:7196543960" class="text-lg text-navy-900 hover:text-coral-700 transition">{{ contact_phone }}</a>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-navy-400 uppercase tracking-wider mb-1">Email</p>
+          <a href="mailto:{{ contact_email }}" class="text-lg text-navy-900 hover:text-coral-700 transition break-all">{{ contact_email }}</a>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 pt-1">
+          <a href="{{ url_for('book') }}" class="inline-flex justify-center bg-navy-900 text-white font-medium px-5 py-2.5 rounded-lg text-sm hover:bg-navy-800 transition">Book a call</a>
+          <a href="{{ url_for('intake') }}" class="inline-flex justify-center border border-navy-200 text-navy-800 font-medium px-5 py-2.5 rounded-lg text-sm hover:border-navy-300 transition">Client intake</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="space-y-5 text-base text-navy-600 leading-relaxed mb-14">
+    {% if about_intro %}<p>{{ about_intro }}</p>{% endif %}
+    {% if about_background %}<p>{{ about_background }}</p>{% endif %}
+    {% if about_body %}
+      {% for para in about_body.split('\n\n') %}
+        {% if para.strip() %}<p>{{ para }}</p>{% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <div class="border-t border-navy-100 pt-12 mb-4">
+    <p class="text-xs font-medium text-coral-500 uppercase tracking-wider mb-3">Why</p>
+    <h2 class="text-2xl sm:text-3xl font-bold text-navy-900 mb-6 tracking-tight font-display">Why this work matters to me</h2>
+    <div class="space-y-5 text-base text-navy-600 leading-relaxed">
+      <p>
+        I love communication. I love people. The two are not separate for me. Words are how we include someone, persuade someone, or leave them outside the room without meaning to. My mom has always said, “Communication is a lifelong struggle.” That line stuck because it is true. Getting heard across age, experience, and culture is never finished work. It is practice.
+      </p>
+      <p>
+        The struggle shows up in the data, not only in living rooms and campaigns.
+      </p>
+      <p>
+        On turnout, younger Americans still lag the older electorate in participation. CIRCLE at Tufts estimated that about <strong class="text-navy-800">47% of youth ages 18 to 29 voted in the 2024 presidential election</strong>, below the 2020 youth peak and far from full participation. In the 2022 midterms, CIRCLE estimated that only <strong class="text-navy-800">about 18% of 18- and 19-year-olds voted</strong>, compared with 24% of youth ages 20 to 29. Looking ahead, The Civics Center reported that roughly <strong class="text-navy-800">42% of 18-year-olds were registered</strong> for the 2026 midterms in the states they measured, versus about <strong class="text-navy-800">82% of voters ages 45 to 79</strong>. When nearly half of an eligible generation is missing from the conversation, the words leaders use either open the door or quietly close it.
+      </p>
+      <p>
+        Intergenerational misunderstanding is measurable at work too. An Indeed survey cited in coverage of multigenerational teams found that different communication styles and expectations across generations ranked among the top challenges in mixed-age workplaces, with poor workplace communication estimated to cost companies on the order of <strong class="text-navy-800">tens of billions of dollars a year</strong> in the United States. A Korn Ferry survey of thousands of employees found that only <strong class="text-navy-800">17% of Gen Z workers</strong> said they had no problem working across generations, compared with <strong class="text-navy-800">45% of baby boomers</strong>. The gap is not only preference. It is whether people feel understood.
+      </p>
+      <p>
+        That is why Resonate exists. I care about the craft of speaking so another generation can actually hear it. Campaigns and public figures who want younger voters in the room need language that respects how those voters listen, without pretending to be something they are not. I love the people on both sides of that exchange enough to treat the words carefully.
+      </p>
+    </div>
+    <div class="mt-8 p-5 bg-white border border-navy-100 rounded-xl">
+      <p class="text-sm text-navy-500 mb-2">Sources</p>
+      <ul class="text-xs text-navy-500 space-y-1.5 leading-relaxed list-disc list-inside">
+        <li>CIRCLE (Tufts): youth turnout estimates for 2024 (~47% ages 18–29); 2022 midterms (~18% ages 18–19 vs ~24% ages 20–29).</li>
+        <li>The Civics Center: ~42% of 18-year-olds registered (Spring 2026, multi-state files) vs ~82% ages 45–79.</li>
+        <li>Indeed survey (reported in Entrepreneur): generational communication styles as a top multigenerational workplace challenge; poor communication cost estimates in the tens of billions annually.</li>
+        <li>Korn Ferry (reported in Fortune, 2025): 17% of Gen Z vs 45% of baby boomers report no difficulty working across generations.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}

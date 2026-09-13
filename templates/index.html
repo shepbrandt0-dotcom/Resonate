@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Resonate{% endblock %}
+{% block page_emblem %}{% endblock %}
+{% block content %}
+<section class="relative min-h-[85vh] flex items-center">
+  <div class="relative max-w-2xl mx-auto px-4 sm:px-6 py-16 lg:py-24 text-center w-full">
+
+    <div class="flex justify-center mb-8">
+      <img
+        src="{{ url_for('static', filename='img/logo-emblem-dark-clean.png') }}"
+        alt="Resonate"
+        class="h-36 sm:h-44 w-auto mx-auto rounded-xl"
+      >
+    </div>
+
+    <div class="mb-8 max-w-lg mx-auto">
+      <p class="text-xs font-semibold tracking-wider uppercase text-coral-500 mb-3">Mission</p>
+      <p class="font-display text-2xl sm:text-3xl text-navy-900 leading-snug font-semibold">
+        {{ mission }}
+      </p>
+    </div>
+
+    <div class="mb-8 max-w-lg mx-auto">
+      <p class="text-xs font-semibold tracking-wider uppercase text-navy-400 mb-3">What we do</p>
+      <p class="text-base sm:text-lg text-navy-600 leading-relaxed">
+        {{ what_we_do }}
+      </p>
+    </div>
+
+    <p class="text-sm text-navy-600 mb-10 max-w-md mx-auto leading-relaxed bg-white/95 border border-navy-100 rounded-lg px-4 py-3">
+      {{ no_ai_note }}
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
+      <a href="{{ url_for('book') }}" class="inline-flex justify-center bg-navy-900 text-white font-medium px-7 py-3 rounded-lg hover:bg-navy-800 transition text-sm">
+        Book now
+      </a>
+      <a href="{{ url_for('product') }}" class="inline-flex justify-center bg-white/95 text-navy-700 font-medium px-7 py-3 rounded-lg border border-navy-200 hover:border-navy-300 transition text-sm">
+        See services
+      </a>
+      {% if reviews_enabled %}
+      <a href="{{ url_for('reviews') }}" class="inline-flex justify-center bg-white/95 text-navy-700 font-medium px-7 py-3 rounded-lg border border-navy-200 hover:border-navy-300 transition text-sm">
+        Reviews
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% if demo_enabled %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+  <div class="border-t border-navy-100 pt-14">
+    <p class="text-xs font-semibold tracking-wider uppercase text-coral-500 mb-3 text-center">Demo</p>
+    <h2 class="font-display text-2xl sm:text-3xl text-navy-900 font-semibold text-center mb-3">{{ demo_heading }}</h2>
+    {% if demo_intro %}
+    <p class="text-navy-600 text-center max-w-2xl mx-auto mb-10 leading-relaxed">{{ demo_intro }}</p>
+    {% endif %}
+
+    <p class="text-sm font-semibold text-navy-800 mb-3">Trump inaugural (2017)</p>
+    <div class="space-y-3 mb-8">
+      <div class="grid md:grid-cols-2 gap-3">
+        <div class="bg-white border border-navy-100 rounded-xl p-4 text-left">
+          <p class="text-xs text-navy-400 uppercase tracking-wider mb-1">Original</p>
+          <p class="text-sm text-navy-700 leading-relaxed">{{ trump_1_orig }}</p>
+        </div>
+        <div class="bg-navy-50 border border-navy-100 rounded-xl p-4 text-left">
+          <p class="text-xs text-coral-500 uppercase tracking-wider mb-1">Rewrite</p>
+          <p class="text-sm text-navy-800 leading-relaxed">{{ trump_1_rewrite }}</p>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-3">
+        <div class="bg-white border border-navy-100 rounded-xl p-4 text-left">
+          <p class="text-xs text-navy-400 uppercase tracking-wider mb-1">Original</p>
+          <p class="text-sm text-navy-700 leading-relaxed">{{ trump_2_orig }}</p>
+        </div>
+        <div class="bg-navy-50 border border-navy-100 rounded-xl p-4 text-left">
+          <p class="text-xs text-coral-500 uppercase tracking-wider mb-1">Rewrite</p>
+          <p class="text-sm text-navy-800 leading-relaxed">{{ trump_2_rewrite }}</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-sm font-semibold text-navy-800 mb-3">Biden inaugural (2021)</p>
+    <div class="space-y-3 mb-8">
+      <div class="grid md:grid-cols-2 gap-3">
+        <div class="bg-white border border-navy-100 rounded-xl p-4 text-left">
+          <p class="text-xs text-navy-400 uppercase tracking-wider mb-1">Original</p>
+          <p class="text-sm text-navy-700 leading-relaxed">{{ biden_1_orig }}</p>
+        </div>
+        <div class="bg-navy-50 border border-navy-100 rounded-xl p-4 text-left">
+          <p class="text-xs text-coral-500 uppercase tracking-wider mb-1">Rewrite</p>
+          <p class="text-sm text-navy-800 leading-relaxed">{{ biden_1_rewrite }}</p>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-3">
+        <div class="bg-white border border-navy-100 rounded-xl p-4 text-left">
+          <p class="text-xs text-navy-400 uppercase tracking-wider mb-1">Original</p>
+          <p class="text-sm text-navy-700 leading-relaxed">{{ biden_2_orig }}</p>
+        </div>
+        <div class="bg-navy-50 border border-navy-100 rounded-xl p-4 text-left">
+          <p class="text-xs text-coral-500 uppercase tracking-wider mb-1">Rewrite</p>
+          <p class="text-sm text-navy-800 leading-relaxed">{{ biden_2_rewrite }}</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center">
+      <a href="{{ url_for('demo_page') }}" class="text-sm font-medium text-navy-700 hover:text-navy-900 underline underline-offset-2">Open full demo page</a>
+    </p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

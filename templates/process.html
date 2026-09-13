@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}How it works · Resonate{% endblock %}
+{% block page_emblem %}{% endblock %}
+{% block content %}
+<section class="relative">
+  <div class="relative max-w-3xl mx-auto px-4 sm:px-6 py-20">
+      <div class="flex items-center gap-4 mb-8">
+    <span class="inline-flex bg-white rounded-xl p-2 border border-navy-100 shrink-0">
+      <img src="{ url_for('static', filename='img/logo-emblem-light-clean.png') }" alt="" class="h-12 w-auto">
+    </span>
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider">Process</p>
+      <h1 class="text-3xl sm:text-4xl font-bold text-navy-900 tracking-tight font-display">How it works</h1>
+    </div>
+  </div>
+    <p class="text-navy-600 mb-12 leading-relaxed">{{ process_intro }}</p>
+
+    <div class="space-y-8">
+      <div class="flex gap-6">
+        <div class="text-3xl sm:text-4xl font-bold font-display text-navy-200 w-12 flex-shrnavy-0">01</div>
+        <div>
+          <h2 class="text-xl font-semibold text-navy-900 mb-2">Discovery call</h2>
+          <p class="text-navy-600 leading-relaxed">Twenty to thirty minutes to map the audience, the goal, any constraints, and what success actually looks like for this particular speech or message.</p>
+        </div>
+      </div>
+      <div class="flex gap-6">
+        <div class="text-3xl sm:text-4xl font-bold font-display text-navy-200 w-12 flex-shrnavy-0">02</div>
+        <div>
+          <h2 class="text-xl font-semibold text-navy-900 mb-2">Create or coach</h2>
+          <p class="text-navy-600 leading-relaxed">A full draft, a rewrite, strategy notes, or live coaching, depending on what is needed. Everything is delivered cleanly through the client portal.</p>
+        </div>
+      </div>
+      <div class="flex gap-6">
+        <div class="text-3xl sm:text-4xl font-bold font-display text-navy-200 w-12 flex-shrnavy-0">03</div>
+        <div>
+          <h2 class="text-xl font-semibold text-navy-900 mb-2">Feedback loop</h2>
+          <p class="text-navy-600 leading-relaxed">You review the work and we refine it. One focused round of revision so the final version is ready to deliver with confidence.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <a href="{{ url_for('book') }}" class="inline-flex bg-navy-900 text-white font-medium px-6 py-3 rounded text-sm hover:bg-navy-800 transition">Book a discovery call</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

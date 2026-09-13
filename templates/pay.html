@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Pay · Resonate{% endblock %}
+{% block page_emblem %}{% endblock %}
+{% block content %}
+<section class="max-w-3xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
+    <div class="flex items-center gap-4 mb-8">
+    <span class="inline-flex bg-white rounded-xl p-2 border border-navy-100 shrink-0">
+      <img src="{ url_for('static', filename='img/logo-emblem-light-clean.png') }" alt="" class="h-12 w-auto">
+    </span>
+    <div>
+      <p class="text-xs font-medium text-coral-500 uppercase tracking-wider">Payment</p>
+      <h1 class="text-3xl sm:text-4xl font-bold text-navy-900 tracking-tight font-display">Pay for your package</h1>
+    </div>
+  </div>
+  <p class="text-navy-600 mb-10 max-w-xl leading-relaxed">
+    Choose a package, then pay with the method that works best for you. After payment, send a quick confirmation so work can begin.
+  </p>
+
+  <!-- Package picker -->
+  <div class="mb-10">
+    <label class="label">What are you paying for?</label>
+    <select id="package" class="input-field">
+      <option value="225">Speech draft — $225</option>
+      <option value="425" selected>Speech + coaching — $425</option>
+      <option value="175">Messaging strategy — $175</option>
+      <option value="100">Short form scripts — $100</option>
+      <option value="200">Town hall prep — $200</option>
+      <option value="125">Rapid response note — $125</option>
+      <option value="300">Debate prep support — $300</option>
+      <option value="900">Monthly subscription — $900</option>
+      <option value="9000">Yearly subscription — $9,000</option>
+      <option value="custom">Custom amount</option>
+    </select>
+    <div id="custom-wrap" class="mt-3 hidden">
+      <label class="label">Custom amount (USD)</label>
+      <input type="number" id="custom-amount" min="1" step="1" class="input-field" placeholder="e.g. 500">
+    </div>
+    <p class="mt-3 text-sm text-navy-600">Amount due: <span id="amount-label" class="font-semibold text-navy-900">$425</span></p>
+  </div>
+
+  <div class="grid sm:grid-cols-2 gap-4 mb-10">
+    <!-- Zelle -->
+    <div class="bg-white border border-navy-100 rounded-xl p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold">Z</div>
+        <h2 class="font-semibold text-navy-900">Zelle</h2>
+      </div>
+      <p class="text-sm text-navy-600 mb-3">Send to:</p>
+      <p class="text-sm font-medium text-navy-900 break-all">shep.brandt@outlook.com</p>
+      <p class="text-sm text-navy-500 mt-1">or (719) 654-3960</p>
+      <p class="text-xs text-navy-400 mt-3">Include your name and package in the memo.</p>
+    </div>
+
+    <!-- Venmo -->
+    <div class="bg-white border border-navy-100 rounded-xl p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-xs font-bold">V</div>
+        <h2 class="font-semibold text-navy-900">Venmo</h2>
+      </div>
+      <p class="text-sm text-navy-600 mb-3">Send to:</p>
+      <p class="text-sm font-medium text-navy-900">@Shepherd-Brandt</p>
+      <p class="text-xs text-navy-400 mt-3">Update this handle in settings if different. Note the package in the payment description.</p>
+    </div>
+
+    <!-- PayPal -->
+    <div class="bg-white border border-navy-100 rounded-xl p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center text-xs font-bold">P</div>
+        <h2 class="font-semibold text-navy-900">PayPal</h2>
+      </div>
+      <p class="text-sm text-navy-600 mb-4">Pay securely with PayPal balance or linked cards.</p>
+      <a id="paypal-link" href="https://www.paypal.com/paypalme/shepbrandt" target="_blank" rel="noopener"
+         class="inline-flex w-full justify-center bg-[#0070ba] text-white font-medium py-2.5 rounded-lg text-sm hover:opacity-90 transition">
+        Pay with PayPal
+      </a>
+    </div>
+
+    <!-- Cards / Apple Pay -->
+    <div class="bg-white border border-navy-100 rounded-xl p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-lg bg-navy-100 text-navy-800 flex items-center justify-center text-xs font-bold">$</div>
+        <h2 class="font-semibold text-navy-900">Card & Apple Pay</h2>
+      </div>
+      <p class="text-sm text-navy-600 mb-4">Debit, credit, and Apple Pay via secure checkout.</p>
+      <button type="button" id="card-btn"
+              class="inline-flex w-full justify-center bg-navy-800 text-white font-medium py-2.5 rounded-lg text-sm hover:bg-navy-900 transition">
+        Continue to card checkout
+      </button>
+      <p class="text-xs text-navy-400 mt-3">Stripe (or similar) can be connected for live card and Apple Pay processing.</p>
+    </div>
+  </div>
+
+  <div id="card-note" class="hidden mb-8 bg-navy-50 border border-navy-100 rounded-xl p-5 text-sm text-navy-700">
+    <p class="font-medium text-navy-900 mb-2">Card and Apple Pay setup</p>
+    <p class="mb-2">To accept debit, credit, and Apple Pay on this site, connect a Stripe account and add your publishable key. Until then, use Zelle, Venmo, or PayPal, or request an invoice on your discovery call.</p>
+    <p>Email <a href="mailto:shep.brandt@outlook.com" class="underline">shep.brandt@outlook.com</a> if you need a card invoice.</p>
+  </div>
+
+  <div class="bg-white border border-navy-100 rounded-xl p-6">
+    <h2 class="font-semibold text-navy-900 mb-2">After you pay</h2>
+    <ol class="text-sm text-navy-600 space-y-2 list-decimal list-inside leading-relaxed">
+      <li>Send a short confirmation to shep.brandt@outlook.com with your name and what you paid for.</li>
+      <li>If you have not already, complete the <a href="{{ url_for('intake') }}" class="text-navy-800 underline">client intake</a>.</li>
+      <li>You will receive portal access to track documents and feedback.</li>
+    </ol>
+  </div>
+</section>
+
+<script>
+  const packageSelect = document.getElementById('package');
+  const customWrap = document.getElementById('custom-wrap');
+  const customAmount = document.getElementById('custom-amount');
+  const amountLabel = document.getElementById('amount-label');
+  const cardBtn = document.getElementById('card-btn');
+  const cardNote = document.getElementById('card-note');
+
+  function currentAmount() {
+    if (packageSelect.value === 'custom') {
+      const n = parseFloat(customAmount.value);
+      return isNaN(n) ? 0 : n;
+    }
+    return parseFloat(packageSelect.value) || 0;
+  }
+
+  function updateLabel() {
+    const amt = currentAmount();
+    amountLabel.textContent = amt > 0 ? ('$' + amt.toLocaleString()) : '—';
+    customWrap.classList.toggle('hidden', packageSelect.value !== 'custom');
+  }
+
+  packageSelect.addEventListener('change', updateLabel);
+  customAmount.addEventListener('input', updateLabel);
+  cardBtn.addEventListener('click', () => {
+    cardNote.classList.remove('hidden');
+    cardNote.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+  updateLabel();
+</script>
+{% endblock %}
