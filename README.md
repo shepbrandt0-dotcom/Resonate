@@ -66,11 +66,31 @@ resonate/
 
 ---
 
-## Next steps
+## Deploy to Render (shareable domain)
 
-1. Change the admin password and secret key in `app.py`
-2. Add real email (Resend/Postmark) for access codes
-3. Add Stripe for paid packages
-4. Deploy to Railway / Render / Fly.io
+The repo includes `render.yaml`, so Render can set the whole thing up from a
+Blueprint:
+
+1. Push this repo to GitHub (already done if you're reading this from there).
+2. Go to [render.com](https://render.com) → New → **Blueprint** → connect the
+   `Resonate` repo and branch.
+3. Render reads `render.yaml` and provisions a free web service automatically.
+   It will prompt you to set `ADMIN_PASSWORD` (kept private, not stored in
+   the repo) — pick something other than the default before it's public.
+4. Deploy. You'll get a URL like `https://resonate.onrender.com` — share that,
+   or open it on your phone directly, or open `/demo` or `/admin` there and
+   use the in-page QR code to hand it to someone else's phone.
+
+**Know before you rely on it:** Render's free tier uses ephemeral disk, so
+the SQLite database (`data/resonate.db`) resets to the seeded demo data
+whenever the service redeploys or spins down from inactivity and back up.
+Fine for showing off the site; don't collect real client intakes on the free
+tier without adding a persistent disk (paid plan) or an external database.
+
+## Other next steps
+
+1. Add real email (Resend/Postmark) for access codes
+2. Add Stripe for paid packages
+3. Move to a persistent database (Postgres) once this isn't just a demo
 
 Built to match the core idea: authentic, sharp, zero corporate-cringe.

@@ -29,7 +29,7 @@ def get_or_create_secret_key():
     return key
 
 
-app.secret_key = get_or_create_secret_key()
+app.secret_key = os.environ.get("SECRET_KEY") or get_or_create_secret_key()
 
 
 def get_lan_ip():
@@ -206,7 +206,6 @@ def init_db():
         ("demo_biden_2_orig", "Biden passage 2 (original)", "demo", "We must end this uncivil war that pits red against blue, rural versus urban, conservative versus liberal. We can do this if we open our souls instead of hardening our hearts."),
         ("demo_biden_2_rewrite", "Biden passage 2 (rewrite)", "demo", "The split between red and blue, city and town, left and right is eating the country from the inside. Ending it starts with words that do not treat half the map as disposable."),
     ]
-    from datetime import datetime, timezone
     now = datetime.now(timezone.utc).isoformat()
     for key, label, page, value in defaults:
         exists = c.execute("SELECT 1 FROM site_content WHERE key = ?", (key,)).fetchone()
@@ -402,7 +401,6 @@ def portal_feedback(intake_id):
         conn.close()
         flash("Invalid request.", "error")
         return redirect(url_for("portal"))
-    from datetime import datetime, timezone
     conn.execute(
         "INSERT INTO feedback (intake_id, client_id, message, created_at) VALUES (?, ?, ?, ?)",
         (intake_id, client_id, message, datetime.now(timezone.utc).isoformat())
@@ -464,8 +462,9 @@ def product():
 def process():
     return render_template("process.html", process_intro=get_content("process_intro", "Easy to explain and easy to begin."))
 
-# Admin password hash for "resonate2026" — change in production
-ADMIN_PASSWORD_HASH = generate_password_hash("resonate2026")
+# Set ADMIN_PASSWORD in the environment to override the "resonate2026" default
+# (important once this is deployed somewhere public — see README).
+ADMIN_PASSWORD_HASH = generate_password_hash(os.environ.get("ADMIN_PASSWORD", "resonate2026"))
 
 def admin_required(f):
     @wraps(f)
@@ -518,7 +517,6 @@ def admin():
 @admin_required
 def admin_edit():
     if request.method == "POST":
-        from datetime import datetime, timezone
         conn = get_db()
         for key in request.form:
             if key.startswith("content_"):
@@ -548,7 +546,6 @@ def admin_edit_add():
     if not key or not label:
         flash("Key and label are required.", "error")
         return redirect(url_for("admin_edit"))
-    from datetime import datetime, timezone
     conn = get_db()
     try:
         conn.execute(
@@ -569,7 +566,6 @@ def admin_edit_add():
 def admin_finance():
     conn = get_db()
     if request.method == "POST":
-        from datetime import datetime, timezone
         amount = request.form.get("amount", "0").replace(",", "").strip()
         try:
             amount_f = float(amount)
@@ -864,7 +860,6 @@ def reviews():
 @admin_required
 def admin_reviews():
     conn = get_db()
-    from datetime import datetime, timezone
     if request.method == "POST":
         action = request.form.get("action", "add")
         if action == "toggle_site":
@@ -919,7 +914,6 @@ def admin_reviews():
 @app.route("/admin/demo", methods=["GET", "POST"])
 @admin_required
 def admin_demo():
-    from datetime import datetime, timezone
     keys = [
         "demo_enabled", "demo_heading", "demo_intro",
         "demo_trump_1_orig", "demo_trump_1_rewrite", "demo_trump_2_orig", "demo_trump_2_rewrite",
@@ -984,7 +978,8 @@ def add_deliverable(intake_id):
         flash("Deliverable added.", "success")
     return redirect(url_for("admin"))
 
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+init_db()
+
 if __name__ == "__main__":
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    init_db()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
