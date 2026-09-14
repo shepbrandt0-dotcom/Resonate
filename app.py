@@ -498,7 +498,7 @@ def admin_login():
             flash("Welcome back.", "success")
             return redirect(url_for("admin"))
         flash("Invalid password.", "error")
-    return render_template("admin_login.html")
+    return render_template("admin_login.html", custom_password_set=bool(os.environ.get("ADMIN_PASSWORD")))
 
 @app.route("/admin", methods=["GET", "POST"])
 @admin_required
