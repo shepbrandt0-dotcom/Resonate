@@ -463,8 +463,12 @@ def process():
     return render_template("process.html", process_intro=get_content("process_intro", "Easy to explain and easy to begin."))
 
 # Set ADMIN_PASSWORD in the environment to override the "resonate2026" default
-# (important once this is deployed somewhere public — see README).
-ADMIN_PASSWORD_HASH = generate_password_hash(os.environ.get("ADMIN_PASSWORD", "resonate2026"))
+# (important once this is deployed somewhere public — see README). Use `or`,
+# not .get()'s default arg: Render stores an env var you left blank as an
+# empty string rather than leaving it unset, and .get(key, default) only
+# falls back when the key is entirely absent — an empty string would
+# otherwise silently become the real password and lock everyone out.
+ADMIN_PASSWORD_HASH = generate_password_hash(os.environ.get("ADMIN_PASSWORD") or "resonate2026")
 
 def admin_required(f):
     @wraps(f)
