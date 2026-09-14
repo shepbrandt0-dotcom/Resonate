@@ -40,6 +40,22 @@
     {% include "_phone_demo.html" with context %}
   </section>
 
+  <!-- Data export -->
+  <section class="mb-12 bg-white rounded-xl border border-slate-200 p-5">
+    <h2 class="text-sm font-semibold text-slate-900 mb-1">Back up your data</h2>
+    <p class="text-xs text-slate-500 mb-3">
+      Download as CSV. Do this regularly if you're on free-tier hosting (e.g. Render) —
+      the database resets to seed data on redeploy or after the app spins down from inactivity.
+    </p>
+    <div class="flex flex-wrap gap-2">
+      <a href="{{ url_for('admin_export', table='bookings') }}" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium text-slate-700">Bookings CSV</a>
+      <a href="{{ url_for('admin_export', table='intakes') }}" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium text-slate-700">Intakes CSV</a>
+      <a href="{{ url_for('admin_export', table='clients') }}" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium text-slate-700">Clients CSV</a>
+      <a href="{{ url_for('admin_export', table='payments') }}" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium text-slate-700">Payments CSV</a>
+      <a href="{{ url_for('admin_export', table='reviews') }}" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium text-slate-700">Reviews CSV</a>
+    </div>
+  </section>
+
   <!-- Bookings -->
   <section class="mb-12">
     <h2 class="text-lg font-semibold mb-4">Discovery call requests</h2>
@@ -47,6 +63,7 @@
       <p class="text-slate-500 text-sm">No bookings yet.</p>
     {% else %}
       <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead class="bg-slate-50 text-left text-slate-500">
             <tr>
@@ -54,21 +71,35 @@
               <th class="px-4 py-3 font-medium">Email</th>
               <th class="px-4 py-3 font-medium">Org</th>
               <th class="px-4 py-3 font-medium">Preferred</th>
+              <th class="px-4 py-3 font-medium">Notes</th>
               <th class="px-4 py-3 font-medium">Status</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
             {% for b in bookings %}
             <tr>
-              <td class="px-4 py-3">{{ b.name }}</td>
-              <td class="px-4 py-3">{{ b.email }}</td>
-              <td class="px-4 py-3">{{ b.org or '—' }}</td>
-              <td class="px-4 py-3">{{ b.preferred_time or '—' }}</td>
-              <td class="px-4 py-3">{{ b.status }}</td>
+              <td class="px-4 py-3 whitespace-nowrap">{{ b.name }}</td>
+              <td class="px-4 py-3 whitespace-nowrap">{{ b.email }}</td>
+              <td class="px-4 py-3 whitespace-nowrap">{{ b.org or '—' }}</td>
+              <td class="px-4 py-3 whitespace-nowrap">{{ b.preferred_time or '—' }}</td>
+              <td class="px-4 py-3 max-w-xs">{{ b.notes or '—' }}</td>
+              <td class="px-4 py-3">
+                <form method="POST" action="{{ url_for('update_booking_status', booking_id=b.id) }}" class="flex items-center gap-2">
+                  <select name="status" class="text-sm border border-slate-300 rounded-lg px-2 py-1.5">
+                    <option value="pending" {% if b.status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="contacted" {% if b.status == 'contacted' %}selected{% endif %}>Contacted</option>
+                    <option value="scheduled" {% if b.status == 'scheduled' %}selected{% endif %}>Scheduled</option>
+                    <option value="completed" {% if b.status == 'completed' %}selected{% endif %}>Completed</option>
+                    <option value="no_show" {% if b.status == 'no_show' %}selected{% endif %}>No-show</option>
+                  </select>
+                  <button type="submit" class="text-sm bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg whitespace-nowrap">Update</button>
+                </form>
+              </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
+        </div>
       </div>
     {% endif %}
   </section>

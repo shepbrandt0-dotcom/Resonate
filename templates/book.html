@@ -13,7 +13,10 @@
     </div>
   </div>
 
-  <p class="text-navy-600 text-sm mb-8">20–30 minutes. No pressure.</p>
+  <p class="text-navy-600 text-sm mb-4">20–30 minutes. No pressure.</p>
+  {% if capacity_note %}
+  <p class="text-xs text-navy-600 bg-navy-50 border border-navy-100 rounded-lg px-4 py-2.5 mb-6">{{ capacity_note }}</p>
+  {% endif %}
   <form method="POST" class="space-y-4">
     <div>
       <label class="label">Your name *</label>

@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, Response
 from datetime import datetime, timezone
 import sqlite3
 import os
 import secrets
 import socket
+import csv
+import io
 from functools import wraps
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -187,6 +189,7 @@ def init_db():
         ("services_intro", "Services intro", "services", "Every service is delivered by Shepherd Brandt in person or by hand. Client writing, coaching, and strategy are never outsourced to AI. The goal is language that holds up when spoken out loud and feels natural to voters under thirty."),
         ("process_intro", "Process intro", "process", "Easy to explain and easy to begin."),
         ("pricing_intro", "Pricing intro", "pricing", "Straightforward pricing so you know what you are getting. Discovery calls are free. Custom scopes are available for larger campaigns."),
+        ("capacity_note", "Booking page capacity note (keep honest — edit or clear as real availability changes)", "book", "Currently taking new clients. Most discovery calls are scheduled within 2 business days."),
         ("faq_intro", "FAQ intro", "faq", "Quick answers about how Resonate works."),
         ("contact_phone", "Contact phone", "about", "(719) 654-3960"),
         ("contact_email", "Contact email", "about", "shep.brandt@outlook.com"),
@@ -215,18 +218,22 @@ def init_db():
                 (key, label, page, value, now),
             )
 
-    # Sample reviews if empty
+    # Sample reviews if empty. Seeded HIDDEN (visible=0): these are placeholder
+    # copy to preview the layout, not real client testimonials. Presenting
+    # fabricated quotes as genuine reviews to real site visitors is both
+    # dishonest and runs into FTC endorsement rules, so they must be swapped
+    # for real testimonials (or left hidden) before this goes live for real.
     rev_count = c.execute("SELECT COUNT(*) as n FROM reviews").fetchone()
     n = rev_count["n"] if rev_count else 0
     if n == 0:
         samples = [
-            ("Alex M.", "Campaign manager", "Shepherd tightened our town hall opening so it sounded like us, not a consultant. Younger volunteers actually used the lines.", 5),
-            ("Jordan K.", "Candidate", "The coaching notes were specific and usable the same day. No fluff.", 5),
-            ("Sam R.", "Comms director", "We needed short form scripts that did not feel cringe. The set we got is still in rotation.", 5),
+            ("Alex M. (SAMPLE — replace before launch)", "Campaign manager", "Shepherd tightened our town hall opening so it sounded like us, not a consultant. Younger volunteers actually used the lines.", 5),
+            ("Jordan K. (SAMPLE — replace before launch)", "Candidate", "The coaching notes were specific and usable the same day. No fluff.", 5),
+            ("Sam R. (SAMPLE — replace before launch)", "Comms director", "We needed short form scripts that did not feel cringe. The set we got is still in rotation.", 5),
         ]
         for name, role, quote, rating in samples:
             c.execute(
-                "INSERT INTO reviews (name, role, quote, rating, visible, created_at) VALUES (?, ?, ?, ?, 1, ?)",
+                "INSERT INTO reviews (name, role, quote, rating, visible, created_at) VALUES (?, ?, ?, ?, 0, ?)",
                 (name, role, quote, rating, now),
             )
 
@@ -304,7 +311,7 @@ def book():
         conn.close()
         flash("Discovery call request received. We'll reply within 24 hours.", "success")
         return redirect(url_for("book"))
-    return render_template("book.html")
+    return render_template("book.html", capacity_note=get_content("capacity_note", ""))
 
 @app.route("/intake", methods=["GET", "POST"])
 def intake():
@@ -963,6 +970,49 @@ def update_status(intake_id):
     conn.close()
     flash("Status updated.", "success")
     return redirect(url_for("admin"))
+
+
+@app.route("/admin/update_booking_status/<int:booking_id>", methods=["POST"])
+@admin_required
+def update_booking_status(booking_id):
+    status = request.form.get("status")
+    conn = get_db()
+    conn.execute("UPDATE bookings SET status = ? WHERE id = ?", (status, booking_id))
+    conn.commit()
+    conn.close()
+    flash("Booking status updated.", "success")
+    return redirect(url_for("admin"))
+
+
+EXPORTABLE_TABLES = ("bookings", "intakes", "clients", "payments", "reviews")
+
+
+@app.route("/admin/export/<table>")
+@admin_required
+def admin_export(table):
+    """Download a table as CSV. Exists mainly so leads/clients/payments can
+    be backed up before a redeploy on ephemeral hosting (e.g. Render's free
+    tier) wipes the SQLite file back to the seeded demo data."""
+    if table not in EXPORTABLE_TABLES:
+        flash("Unknown export.", "error")
+        return redirect(url_for("admin"))
+    conn = get_db()
+    rows = conn.execute(f"SELECT * FROM {table} ORDER BY id").fetchall()
+    conn.close()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    if rows:
+        writer.writerow(rows[0].keys())
+        writer.writerows(rows)
+    else:
+        writer.writerow(["(no rows)"])
+
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": f"attachment; filename={table}.csv"},
+    )
 
 @app.route("/admin/add_deliverable/<int:intake_id>", methods=["POST"])
 @admin_required

@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>{% block title %}Resonate{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Speeches, coaching, and messaging strategy that lands with voters under thirty. Human-written, no AI, for candidates and campaign teams.{% endblock %}">
+  <link rel="icon" href="{{ url_for('static', filename='img/logo-emblem.svg') }}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo-emblem-dark-clean.png') }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Resonate">
+  <meta property="og:title" content="{% block og_title %}Resonate — Speeches that land with young voters{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Human-written speeches, coaching, and messaging strategy for candidates and campaign teams who need to reach voters under thirty.{% endblock %}">
+  <meta property="og:image" content="{{ url_for('static', filename='img/logo-hero.png', _external=True) }}">
+  <meta name="twitter:card" content="summary_large_image">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
