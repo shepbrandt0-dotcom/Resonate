@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Cookie Policy · Resonate{% endblock %}
+{% block page_emblem %}{% endblock %}
+{% block content %}
+<section class="max-w-3xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
+  <p class="text-xs font-medium text-coral-500 uppercase tracking-wider mb-3">Legal</p>
+  <h1 class="text-3xl sm:text-4xl font-bold text-navy-900 tracking-tight font-display mb-2">Cookie Policy</h1>
+  <p class="text-sm text-navy-500 mb-10">Last updated: {{ last_updated }}</p>
+
+  <div class="space-y-8 text-navy-700 leading-relaxed text-sm sm:text-base">
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">The short version</h2>
+      <p>This site uses exactly one cookie: an essential session cookie that keeps you signed into the client portal or admin area. We don't use analytics, advertising, or tracking cookies of any kind.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">The session cookie</h2>
+      <p>When you log into the client portal or the admin area, this site sets a cookie that identifies your logged-in session. It's required for those areas to work — without it, the site can't tell you're logged in. It doesn't track you across other sites and isn't used for advertising. It's cleared when you log out or expires after a period of inactivity.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Third-party requests (not cookies we set)</h2>
+      <p>Some pages load resources directly from other providers. Those providers may see standard technical information (like your IP address) when your browser requests their file — that's a normal part of how the web works, and separate from any cookie this site sets:</p>
+      <ul class="list-disc list-inside space-y-1 mt-2">
+        <li>Google Fonts — typefaces</li>
+        <li>Tailwind CSS CDN — page styling</li>
+        <li>Unsplash — one decorative background photo</li>
+        <li>A QR-code script, loaded only on the phone-demo widget in the admin dashboard and demo page</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Managing cookies</h2>
+      <p>You can clear cookies and site data for this site at any time in your browser settings. Since the only cookie here is the essential login cookie, doing so will simply log you out.</p>
+    </div>
+
+    <p class="text-sm text-navy-500">See also our <a href="{{ url_for('privacy') }}" class="text-navy-800 underline">Privacy Policy</a> and <a href="{{ url_for('terms') }}" class="text-navy-800 underline">Terms of Service</a>.</p>
+  </div>
+</section>
+{% endblock %}

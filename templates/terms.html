@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Terms of Service · Resonate{% endblock %}
+{% block page_emblem %}{% endblock %}
+{% block content %}
+<section class="max-w-3xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
+  <p class="text-xs font-medium text-coral-500 uppercase tracking-wider mb-3">Legal</p>
+  <h1 class="text-3xl sm:text-4xl font-bold text-navy-900 tracking-tight font-display mb-2">Terms of Service</h1>
+  <p class="text-sm text-navy-500 mb-10">Last updated: {{ last_updated }}</p>
+
+  <div class="bg-coral-50 border border-coral-100 rounded-xl p-4 text-sm text-coral-900 mb-10">
+    This page is a plain-language starting point, not legal advice — particularly the refund and liability sections below, which are generic defaults. Replace them with your actual policy and have a lawyer review before relying on this.
+  </div>
+
+  <div class="space-y-8 text-navy-700 leading-relaxed text-sm sm:text-base">
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">The service</h2>
+      <p>Resonate provides speechwriting, delivery coaching, and messaging strategy services to candidates, elected officials, and campaign or advocacy teams. All client writing, coaching, and strategy work is produced by hand by {{ contact_name }} — never by AI.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Eligibility</h2>
+      <p>This site and its services are intended for adults (18+) and the organizations they represent. It is not directed to, and should not be used by, minors.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Booking and intake</h2>
+      <p>Submitting a discovery call request or client intake form does not by itself create a paid engagement. Scope, timeline, and price are confirmed between you and Resonate before work begins.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Payment</h2>
+      <p>Package pricing is listed on the <a href="{{ url_for('pricing') }}" class="text-navy-800 underline">Pricing page</a> and may change over time; the price confirmed for your project is the price that applies to it. Payment is made using one of the methods on the <a href="{{ url_for('pay') }}" class="text-navy-800 underline">Pay page</a>.</p>
+    </div>
+
+    <div id="refunds">
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Refunds</h2>
+      <p>Discovery calls are free, so no refund applies to them. For paid work, unless otherwise agreed in writing:</p>
+      <ul class="list-disc list-inside space-y-1 mt-2">
+        <li>If you cancel before work has started, you receive a full refund.</li>
+        <li>Once drafting or coaching has started, fees for work already completed are non-refundable; any paid-but-not-yet-started portion of a package is refunded.</li>
+        <li>Monthly subscriptions can be canceled at any time and will not renew for the next cycle; the current paid cycle is not refunded.</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Revisions</h2>
+      <p>Each package includes a set number of revision rounds, listed on the Pricing page. Additional revisions beyond that can be scoped separately.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Ownership</h2>
+      <p>Once a project is paid in full, you own the delivered speech, script, or written materials. Resonate may reference the general, non-confidential nature of the engagement (e.g. "worked with a campaign on town hall prep") for portfolio purposes unless you ask us not to.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Your responsibility</h2>
+      <p>Resonate provides writing, coaching, and messaging strategy. You (the client) are responsible for the factual accuracy, legal compliance, and political judgment involved in anything before you use it publicly. Resonate is not liable for the outcome of any election, event, or public communication.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Third-party assets</h2>
+      <p>This site uses Google Fonts, Tailwind CSS (via its CDN), a decorative Unsplash photo, and a QR-code library on certain admin/demo pages — each used under its own standard license terms for web use.</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Governing law</h2>
+      <p>[Add the state/jurisdiction whose law governs this agreement.]</p>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Changes to these terms</h2>
+      <p>If these terms change, we'll update the date at the top of this page.</p>
+    </div>
+
+    <div class="border-t border-navy-100 pt-6">
+      <h2 class="text-lg font-semibold text-navy-900 mb-2 font-display">Contact</h2>
+      <p>{{ contact_name }}<br>
+      {% if legal_business_name %}{{ legal_business_name }}<br>{% endif %}
+      {% if legal_business_address %}{{ legal_business_address }}<br>{% endif %}
+      <a href="mailto:{{ contact_email }}" class="text-navy-800 underline">{{ contact_email }}</a> · {{ contact_phone }}</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

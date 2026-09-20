@@ -23,7 +23,7 @@
           {% for item in items %}
             <div>
               <label class="label">{{ item.label }}</label>
-              <p class="text-xs text-navy-400 mb-1">Key: {{ item.key }}</p>
+              <p class="text-xs text-navy-500 mb-1">Key: {{ item.key }}</p>
               {% if item.value and item.value|length > 120 %}
                 <textarea name="content_{{ item.key }}" rows="6" class="input-field">{{ item.value }}</textarea>
               {% else %}

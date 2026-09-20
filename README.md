@@ -89,8 +89,15 @@ tier without adding a persistent disk (paid plan) or an external database.
 
 ## Other next steps
 
-1. Add real email (Resend/Postmark) for access codes
+1. Add real email (Resend/Postmark) for access codes — include an unsubscribe
+   link on any marketing email (not required for one-off transactional
+   emails like access codes), per the commitment in the Privacy Policy.
 2. Add Stripe for paid packages
 3. Move to a persistent database (Postgres) once this isn't just a demo
+4. Fill in `legal_business_name` and `legal_business_address` in Edit Website
+   (under the "legal" section) — they show up on /privacy and /terms
+5. Have a lawyer review /privacy, /terms, and /cookies before relying on
+   them — they're a solid starting point, not legal advice, especially the
+   refund and governing-law sections in Terms
 
 Built to match the core idea: authentic, sharp, zero corporate-cringe.

@@ -38,6 +38,10 @@
       <label class="label">Notes</label>
       <textarea name="notes" rows="3" class="input-field"></textarea>
     </div>
+    <label class="flex items-start gap-2.5 text-sm text-navy-600">
+      <input type="checkbox" name="consent" required class="mt-0.5">
+      <span>I agree to the <a href="{{ url_for('privacy') }}" target="_blank" class="text-navy-800 underline">Privacy Policy</a> and <a href="{{ url_for('terms') }}" target="_blank" class="text-navy-800 underline">Terms of Service</a>. *</span>
+    </label>
     <button type="submit" class="w-full bg-navy-900 text-white font-medium py-3 rounded text-sm hover:bg-navy-800 transition">Request call</button>
   </form>
 </div>

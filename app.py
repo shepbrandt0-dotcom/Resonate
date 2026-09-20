@@ -166,6 +166,19 @@ def init_db():
             created_at TEXT
         )
     """)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS deletion_requests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            client_id INTEGER,
+            client_name TEXT,
+            client_email TEXT,
+            message TEXT,
+            status TEXT DEFAULT 'pending',
+            created_at TEXT,
+            fulfilled_at TEXT,
+            FOREIGN KEY (client_id) REFERENCES clients(id)
+        )
+    """)
     # Seed a demo admin client
     c.execute("SELECT id FROM clients WHERE email = ?", ("demo@resonate.coach",))
     if not c.fetchone():
@@ -194,6 +207,8 @@ def init_db():
         ("contact_phone", "Contact phone", "about", "(719) 654-3960"),
         ("contact_email", "Contact email", "about", "shep.brandt@outlook.com"),
         ("contact_name", "Contact name", "about", "Shepherd Brandt"),
+        ("legal_business_name", "Legal business name (shown on Privacy/Terms — add your real registered name)", "legal", "[Add your registered business or legal name here]"),
+        ("legal_business_address", "Business mailing address (shown on Privacy/Terms — add a real address or PO box)", "legal", "[Add a business mailing address or PO box here]"),
         ("reviews_enabled", "Show reviews on site (on/off)", "reviews", "on"),
         ("reviews_heading", "Reviews page heading", "reviews", "What clients say"),
         ("reviews_intro", "Reviews page intro", "reviews", "Feedback from people who have worked with Resonate on speeches, coaching, and messaging."),
@@ -218,24 +233,10 @@ def init_db():
                 (key, label, page, value, now),
             )
 
-    # Sample reviews if empty. Seeded HIDDEN (visible=0): these are placeholder
-    # copy to preview the layout, not real client testimonials. Presenting
-    # fabricated quotes as genuine reviews to real site visitors is both
-    # dishonest and runs into FTC endorsement rules, so they must be swapped
-    # for real testimonials (or left hidden) before this goes live for real.
-    rev_count = c.execute("SELECT COUNT(*) as n FROM reviews").fetchone()
-    n = rev_count["n"] if rev_count else 0
-    if n == 0:
-        samples = [
-            ("Alex M. (SAMPLE — replace before launch)", "Campaign manager", "Shepherd tightened our town hall opening so it sounded like us, not a consultant. Younger volunteers actually used the lines.", 5),
-            ("Jordan K. (SAMPLE — replace before launch)", "Candidate", "The coaching notes were specific and usable the same day. No fluff.", 5),
-            ("Sam R. (SAMPLE — replace before launch)", "Comms director", "We needed short form scripts that did not feel cringe. The set we got is still in rotation.", 5),
-        ]
-        for name, role, quote, rating in samples:
-            c.execute(
-                "INSERT INTO reviews (name, role, quote, rating, visible, created_at) VALUES (?, ?, ?, ?, 0, ?)",
-                (name, role, quote, rating, now),
-            )
+    # No fake reviews are seeded here on purpose. Displaying fabricated
+    # testimonials to real visitors is both dishonest and runs into FTC
+    # endorsement-rules problems — add real client reviews from /admin/reviews
+    # once you have them.
 
     conn.commit()
     conn.close()
@@ -302,6 +303,9 @@ def book():
         if not name or not email:
             flash("Name and email are required.", "error")
             return redirect(url_for("book"))
+        if not request.form.get("consent"):
+            flash("Please agree to the Privacy Policy and Terms of Service to continue.", "error")
+            return redirect(url_for("book"))
         conn = get_db()
         conn.execute(
             "INSERT INTO bookings (name, email, org, preferred_time, notes, created_at) VALUES (?, ?, ?, ?, ?, ?)",
@@ -330,6 +334,9 @@ def intake():
         }
         if not data["name"] or not data["email"] or not data["goal"]:
             flash("Name, email, and primary goal are required.", "error")
+            return redirect(url_for("intake"))
+        if not request.form.get("consent"):
+            flash("Please agree to the Privacy Policy and Terms of Service to continue.", "error")
             return redirect(url_for("intake"))
         conn = get_db()
         # Create or get client
@@ -423,6 +430,23 @@ def portal_logout():
     return redirect(url_for("index"))
 
 
+@app.route("/portal/request-deletion", methods=["POST"])
+@login_required
+def portal_request_deletion():
+    client_id = session["client_id"]
+    message = request.form.get("message", "").strip()
+    conn = get_db()
+    client = conn.execute("SELECT name, email FROM clients WHERE id = ?", (client_id,)).fetchone()
+    conn.execute(
+        "INSERT INTO deletion_requests (client_id, client_name, client_email, message, created_at) VALUES (?, ?, ?, ?, ?)",
+        (client_id, client["name"] if client else "", client["email"] if client else "", message, datetime.now(timezone.utc).isoformat()),
+    )
+    conn.commit()
+    conn.close()
+    flash("Deletion request received. We'll process it and confirm by email.", "success")
+    return redirect(url_for("portal"))
+
+
 
 @app.route("/pricing")
 def pricing():
@@ -435,6 +459,33 @@ def pay():
 @app.route("/faq")
 def faq():
     return render_template("faq.html", faq_intro=get_content("faq_intro", "Quick answers about how Resonate works."))
+
+
+def legal_context():
+    return dict(
+        legal_business_name=get_content("legal_business_name", ""),
+        legal_business_address=get_content("legal_business_address", ""),
+        contact_name=get_content("contact_name", "Shepherd Brandt"),
+        contact_phone=get_content("contact_phone", "(719) 654-3960"),
+        contact_email=get_content("contact_email", "shep.brandt@outlook.com"),
+        last_updated=datetime.now(timezone.utc).strftime("%B %d, %Y").replace(" 0", " "),
+    )
+
+
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html", **legal_context())
+
+
+@app.route("/terms")
+def terms():
+    return render_template("terms.html", **legal_context())
+
+
+@app.route("/cookies")
+def cookies():
+    return render_template("cookies.html", **legal_context())
+
 
 @app.route("/contact")
 def contact():
@@ -513,6 +564,9 @@ def admin():
         ).fetchall()
     except Exception:
         feedback = []
+    deletion_requests = conn.execute(
+        "SELECT * FROM deletion_requests WHERE status = 'pending' ORDER BY created_at"
+    ).fetchall()
     conn.close()
     return render_template(
         "admin.html",
@@ -520,6 +574,7 @@ def admin():
         bookings=bookings,
         clients=clients,
         feedback=feedback,
+        deletion_requests=deletion_requests,
         phone_target_url=phone_friendly_url(url_for("index")),
     )
 
@@ -984,7 +1039,52 @@ def update_booking_status(booking_id):
     return redirect(url_for("admin"))
 
 
-EXPORTABLE_TABLES = ("bookings", "intakes", "clients", "payments", "reviews")
+@app.route("/admin/fulfill_deletion/<int:request_id>", methods=["POST"])
+@admin_required
+def admin_fulfill_deletion(request_id):
+    """Erase a client's data on request and mark the deletion request done.
+    Deliberately a manual, reviewed action rather than immediate self-service
+    deletion, since it's irreversible."""
+    conn = get_db()
+    req = conn.execute("SELECT * FROM deletion_requests WHERE id = ?", (request_id,)).fetchone()
+    if not req:
+        conn.close()
+        flash("Request not found.", "error")
+        return redirect(url_for("admin"))
+
+    client_id = req["client_id"]
+    if client_id:
+        intake_ids = [row["id"] for row in conn.execute("SELECT id FROM intakes WHERE client_id = ?", (client_id,)).fetchall()]
+        for iid in intake_ids:
+            conn.execute("DELETE FROM deliverables WHERE intake_id = ?", (iid,))
+            conn.execute("DELETE FROM feedback WHERE intake_id = ?", (iid,))
+        conn.execute("DELETE FROM intakes WHERE client_id = ?", (client_id,))
+        conn.execute("DELETE FROM feedback WHERE client_id = ?", (client_id,))
+        conn.execute("DELETE FROM clients WHERE id = ?", (client_id,))
+
+    now = datetime.now(timezone.utc).isoformat()
+    conn.execute("UPDATE deletion_requests SET status = 'fulfilled', fulfilled_at = ? WHERE id = ?", (now, request_id))
+    conn.commit()
+    conn.close()
+    flash("Client data deleted and request marked fulfilled.", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/dismiss_deletion/<int:request_id>", methods=["POST"])
+@admin_required
+def admin_dismiss_deletion(request_id):
+    """Mark a deletion request handled without deleting data — e.g. it was
+    resolved by contacting the client directly, or was a duplicate."""
+    conn = get_db()
+    now = datetime.now(timezone.utc).isoformat()
+    conn.execute("UPDATE deletion_requests SET status = 'dismissed', fulfilled_at = ? WHERE id = ?", (now, request_id))
+    conn.commit()
+    conn.close()
+    flash("Request dismissed.", "success")
+    return redirect(url_for("admin"))
+
+
+EXPORTABLE_TABLES = ("bookings", "intakes", "clients", "payments", "reviews", "deletion_requests")
 
 
 @app.route("/admin/export/<table>")

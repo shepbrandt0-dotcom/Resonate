@@ -53,8 +53,35 @@
       <a href="{{ url_for('admin_export', table='clients') }}" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium text-slate-700">Clients CSV</a>
       <a href="{{ url_for('admin_export', table='payments') }}" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium text-slate-700">Payments CSV</a>
       <a href="{{ url_for('admin_export', table='reviews') }}" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium text-slate-700">Reviews CSV</a>
+      <a href="{{ url_for('admin_export', table='deletion_requests') }}" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium text-slate-700">Deletion requests CSV</a>
     </div>
   </section>
+
+  <!-- Data deletion requests -->
+  {% if deletion_requests %}
+  <section class="mb-12 bg-white rounded-xl border border-coral-200 p-5">
+    <h2 class="text-sm font-semibold text-coral-800 mb-3">Pending data deletion requests</h2>
+    <div class="space-y-3">
+      {% for r in deletion_requests %}
+      <div class="border border-coral-100 bg-coral-50 rounded-lg p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="text-sm">
+          <p class="font-medium text-navy-900">{{ r.client_name or 'Unknown client' }} · {{ r.client_email }}</p>
+          {% if r.message %}<p class="text-navy-600 mt-1">{{ r.message }}</p>{% endif %}
+          <p class="text-xs text-navy-400 mt-1">Requested {{ r.created_at[:10] }}</p>
+        </div>
+        <div class="flex gap-2">
+          <form method="POST" action="{{ url_for('admin_fulfill_deletion', request_id=r.id) }}" onsubmit="return confirm('Permanently delete this client and all their intakes/deliverables? This cannot be undone.');">
+            <button type="submit" class="text-xs bg-coral-600 text-white font-medium px-3 py-1.5 rounded-lg hover:bg-coral-700">Delete client data</button>
+          </form>
+          <form method="POST" action="{{ url_for('admin_dismiss_deletion', request_id=r.id) }}">
+            <button type="submit" class="text-xs bg-white border border-slate-300 text-slate-700 font-medium px-3 py-1.5 rounded-lg hover:bg-slate-50">Dismiss</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
 
   <!-- Bookings -->
   <section class="mb-12">
@@ -169,7 +196,7 @@
           <li class="px-5 py-4 text-sm">
             <p class="font-medium text-navy-900">{{ f.client_name or 'Client' }}</p>
             <p class="text-navy-600 mt-1">{{ f.message }}</p>
-            <p class="text-xs text-navy-400 mt-2">{{ f.created_at[:16] if f.created_at else '' }}</p>
+            <p class="text-xs text-navy-500 mt-2">{{ f.created_at[:16] if f.created_at else '' }}</p>
           </li>
         {% endfor %}
         </ul>

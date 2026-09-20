@@ -62,7 +62,7 @@
                         <p class="text-sm text-navy-600 whitespace-pre-wrap">{{ d.notes }}</p>
                       </div>
                     {% endif %}
-                    <p class="text-xs text-navy-400 mt-3">Delivered {{ d.created_at[:10] }}</p>
+                    <p class="text-xs text-navy-500 mt-3">Delivered {{ d.created_at[:10] }}</p>
                   </div>
                 {% endfor %}
               </div>
@@ -92,5 +92,17 @@
   <div class="mt-10 text-center">
     <a href="{{ url_for('intake') }}" class="text-sm text-navy-700 hover:text-navy-900 font-medium">Submit another intake →</a>
   </div>
+
+  <details class="mt-12 bg-white rounded-xl border border-navy-100 p-5">
+    <summary class="cursor-pointer text-sm font-medium text-navy-700">Privacy & data</summary>
+    <div class="mt-4 text-sm text-navy-600 space-y-3">
+      <p>See our <a href="{{ url_for('privacy') }}" class="text-navy-800 underline">Privacy Policy</a> for what we collect and why.</p>
+      <form method="POST" action="{{ url_for('portal_request_deletion') }}" class="space-y-2" onsubmit="return confirm('This asks us to permanently delete your account, intakes, and delivered documents. Continue?');">
+        <label class="label">Request account deletion</label>
+        <textarea name="message" rows="2" class="input-field" placeholder="Optional note"></textarea>
+        <button type="submit" class="text-sm text-coral-600 hover:underline">Request deletion of my data</button>
+      </form>
+    </div>
+  </details>
 </div>
 {% endblock %}
